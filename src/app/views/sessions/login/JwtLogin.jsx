@@ -53,8 +53,8 @@ const JwtLogin = () => {
     const navigate = useNavigate()
     const [loading, setLoading] = useState(false)
     const [userInfo, setUserInfo] = useState({
-        email: 'jason@ui-lib.com',
-        password: 'dummyPass',
+        email: 'bayuiwo@gmail.com',
+        password: '12341234',
     })
     const [message, setMessage] = useState('')
     const { login } = useAuth()
@@ -74,6 +74,7 @@ const JwtLogin = () => {
         try {
             await login(userInfo.email, userInfo.password)
             navigate('/')
+            //navigate('/dashboard/default')
         } catch (e) {
             console.log(e)
             setMessage(e.message)

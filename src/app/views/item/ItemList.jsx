@@ -7,30 +7,61 @@ import {
     IconButton,
     Icon,
     TableRow,
+    Card,
+    Select,
+    Button,
+    Avatar,
 } from '@mui/material'
-import { Box, styled } from '@mui/system'
+import { useNavigate } from 'react-router-dom'
+
+import { Box, styled, useTheme } from '@mui/system'
 import { Breadcrumb, SimpleCard } from 'app/components'
 import { useRecoilValue } from 'recoil'
-import { dataProduct } from 'app/store'
+import { Paragraph, Span } from 'app/components/Typography'
+import { dataItem } from 'app/store/listItem'
 
-const StyledTable = styled(Table)(({ theme }) => ({
+const CardHeader = styled('div')(() => ({
+    paddingLeft: '24px',
+    paddingRight: '24px',
+    marginBottom: '12px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+}))
+
+const ProductTable = styled(Table)(() => ({
+    minWidth: 400,
     whiteSpace: 'pre',
-    '& thead': {
-        '& tr': {
-            '& th': {
-                paddingLeft: 0,
-                paddingRight: 0,
-            },
-        },
+    '& small': {
+        height: 15,
+        width: 50,
+        borderRadius: 500,
+        boxShadow:
+            '0 0 2px 0 rgba(0, 0, 0, 0.12), 0 2px 2px 0 rgba(0, 0, 0, 0.24)',
     },
-    '& tbody': {
-        '& tr': {
-            '& td': {
-                paddingLeft: 0,
-                textTransform: 'capitalize',
-            },
-        },
+    '& td': {
+        borderBottom: 'none',
     },
+    '& td:first-of-type': {
+        paddingLeft: '16px !important',
+    },
+}))
+
+const Small = styled('small')(({ bgcolor }) => ({
+    height: 15,
+    width: 50,
+    color: '#fff',
+    padding: '2px 8px',
+    borderRadius: '4px',
+    overflow: 'hidden',
+    background: bgcolor,
+    boxShadow: '0 0 2px 0 rgba(0, 0, 0, 0.12), 0 2px 2px 0 rgba(0, 0, 0, 0.24)',
+}))
+
+const Title = styled('span')(() => ({
+    fontSize: '1rem',
+    fontWeight: '500',
+    textTransform: 'capitalize',
 }))
 
 const Container = styled('div')(({ theme }) => ({
@@ -46,56 +77,14 @@ const Container = styled('div')(({ theme }) => ({
     },
 }))
 
-const subscribarList = [
-    {
-        name: 'john doe',
-        date: '18 january, 2019',
-        amount: 1000,
-        status: 'close',
-        company: 'ABC Fintech LTD.',
-    },
-    {
-        name: 'kessy bryan',
-        date: '10 january, 2019',
-        amount: 9000,
-        status: 'open',
-        company: 'My Fintech LTD.',
-    },
-    {
-        name: 'james cassegne',
-        date: '8 january, 2019',
-        amount: 5000,
-        status: 'close',
-        company: 'Collboy Tech LTD.',
-    },
-    {
-        name: 'lucy brown',
-        date: '1 january, 2019',
-        amount: 89000,
-        status: 'open',
-        company: 'ABC Fintech LTD.',
-    },
-    {
-        name: 'lucy brown',
-        date: '1 january, 2019',
-        amount: 89000,
-        status: 'open',
-        company: 'ABC Fintech LTD.',
-    },
-    {
-        name: 'lucy brown',
-        date: '1 january, 2019',
-        amount: 89000,
-        status: 'open',
-        company: 'ABC Fintech LTD.',
-    },
-]
-
-
-
 const ItemList = () => {
-    const {product} = useRecoilValue(dataProduct)
-    console.log("product",product.products)
+    const navigate = useNavigate()
+    const {product} = useRecoilValue(dataItem)
+    const { palette } = useTheme()
+    const bgError = palette.error.main
+    const bgPrimary = palette.primary.main
+    const bgSecondary = palette.secondary.main
+
     return (
         <Container>
             <div className="breadcrumb">
@@ -105,44 +94,103 @@ const ItemList = () => {
                     ]}
                 />
             </div>
-            <SimpleCard title="List Item" >
-            <Box width="100%" overflow="auto">
-            <StyledTable>
-                <TableHead>
-                    <TableRow>
-                        <TableCell>Name</TableCell>
-                        <TableCell>Price</TableCell>
-                        <TableCell>Unit Date</TableCell>
-                        <TableCell>Desc.</TableCell>
-                
-                        <TableCell>Action</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {product.products.map((subscriber, index) => (
-                        <TableRow key={index}>
-                            <TableCell align="left">
-                                {subscriber.name}
+            <Card elevation={3} sx={{ pt: '20px', mb: 3 }}>
+            <CardHeader>
+                <Title>Item</Title>
+                <Button color="primary" variant="contained" onClick={()=> navigate('/material/form')}>
+
+                    <Span sx={{ pl: 1, textTransform: 'capitalize' }}>
+                        Add Item
+                    </Span>
+                </Button>
+            </CardHeader>
+            <Box overflow="auto">
+                <ProductTable>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell sx={{ px: 3 }} colSpan={4}>
+                                Name
                             </TableCell>
-                            <TableCell align="left">
-                                {subscriber.price}
+                            <TableCell sx={{ px: 0 }} colSpan={2}>
+                                Type
                             </TableCell>
-                            <TableCell align="left">
-                                {subscriber.unit}
+                            <TableCell sx={{ px: 0 }} colSpan={2}>
+                                Price
                             </TableCell>
-                            <TableCell>{subscriber.desc}</TableCell>
-                        
-                            <TableCell>
-                                <IconButton>
-                                    <Icon color="error">close</Icon>
-                                </IconButton>
+                            <TableCell sx={{ px: 0 }} colSpan={2}>
+                                Stock Status
+                            </TableCell>
+                            <TableCell sx={{ px: 0 }} colSpan={1}>
+                                Action
                             </TableCell>
                         </TableRow>
-                    ))}
-                </TableBody>
-            </StyledTable>
-        </Box>
-        </SimpleCard>
+                    </TableHead>
+                    <TableBody>
+                        {product.products.map((product, index) => (
+                            <TableRow key={index} hover>
+                                <TableCell
+                                    colSpan={4}
+                                    align="left"
+                                    sx={{ px: 0, textTransform: 'capitalize' }}
+                                >
+                                    <Box display="flex" alignItems="center">
+                                        <Avatar src={product.banner} />
+                                        <Paragraph sx={{ m: 0, ml: 4 }}>
+                                            {product.name}
+                                        </Paragraph>
+                                    </Box>
+                                </TableCell>
+                                <TableCell
+                                    align="left"
+                                    colSpan={2}
+                                    sx={{ px: 0, textTransform: 'capitalize' }}
+                                >
+                                 {product.type}
+                                </TableCell>
+                                <TableCell
+                                    align="left"
+                                    colSpan={2}
+                                    sx={{ px: 0, textTransform: 'capitalize' }}
+                                >
+                                    $
+                                    {product.price > 999
+                                        ? (product.price / 1000).toFixed(1) +
+                                        'k'
+                                        : product.price}
+                                </TableCell>
+
+                                <TableCell
+                                    sx={{ px: 0 }}
+                                    align="left"
+                                    colSpan={2}
+                                >
+                                    {product.unit ? (
+                                        product.unit < 20 ? (
+                                            <Small bgcolor={bgSecondary}>
+                                                {product.unit} available
+                                            </Small>
+                                        ) : (
+                                            <Small bgcolor={bgPrimary}>
+                                                in stock
+                                            </Small>
+                                        )
+                                    ) : (
+                                        <Small bgcolor={bgError}>
+                                            out of stock
+                                        </Small>
+                                    )}
+                                </TableCell>
+                                <TableCell sx={{ px: 0 }} colSpan={1}>
+                                    <IconButton>
+                                        <Icon color="primary">edit</Icon>
+                                    </IconButton>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </ProductTable>
+            </Box>
+        </Card>
         </Container>
     )
 }

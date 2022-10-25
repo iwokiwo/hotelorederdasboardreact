@@ -12,7 +12,7 @@ export const navigations = [
             {
                 name: 'List Items',
                 iconText: 'SI',
-                path: '/session/signin',
+                path: '/item/item-list',
             },
             {
                 name: 'List Kategory',

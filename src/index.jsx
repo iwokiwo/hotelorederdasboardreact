@@ -6,13 +6,16 @@ import 'perfect-scrollbar/css/perfect-scrollbar.css'
 import * as serviceWorker from './serviceWorker'
 import { StyledEngineProvider } from '@mui/styled-engine'
 import { CssBaseline } from '@mui/material'
+import { RecoilRoot } from 'recoil'
 
 ReactDOM.render(
     <StyledEngineProvider injectFirst>
+        <RecoilRoot>
         <BrowserRouter>
             <CssBaseline />
             <App />
         </BrowserRouter>
+        </RecoilRoot>
     </StyledEngineProvider>,
     document.getElementById('root')
 )

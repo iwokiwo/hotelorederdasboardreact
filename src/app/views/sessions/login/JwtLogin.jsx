@@ -34,7 +34,7 @@ const IMG = styled('img')(() => ({
 }))
 
 const JWTRoot = styled(JustifyBox)(() => ({
-    background: '#1A2038',
+    background: '#1976d2',
     minHeight: '100% !important',
     '& .card': {
         maxWidth: 800,
@@ -73,10 +73,11 @@ const JwtLogin = () => {
         setLoading(true)
         try {
             await login(userInfo.email, userInfo.password)
+            console.log("login",login(userInfo.email, userInfo.password))
             navigate('/')
             //navigate('/dashboard/default')
         } catch (e) {
-            console.log(e)
+            console.log("error",e)
             setMessage(e.message)
             setLoading(false)
         }

@@ -48,9 +48,9 @@ const Footer = () => {
                 <AppFooter>
                     <FooterContent>
                         <a href="https://ui-lib.com/downloads/matx-pro-react-admin/">
-                            <Button variant="contained" color="secondary">
+                            {/* <Button variant="contained" color="secondary">
                                 Get MatX Pro
-                            </Button>
+                            </Button> */}
                         </a>
                         <Span sx={{ m: "auto" }}></Span>
                         <Paragraph sx={{ m: 0 }}>

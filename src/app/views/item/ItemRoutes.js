@@ -2,13 +2,13 @@ import React, { lazy } from 'react'
 import Loadable from 'app/components/Loadable/Loadable'
 import { authRoles } from '../../auth/authRoles'
 
-const Analytics = Loadable(lazy(() => import('./Analytics')))
+const ItemList = Loadable(lazy(() => import('./ItemList')))
 
 const itemRoutes = [
     {
-        path: '/dashboard/default',
-        element: <Analytics />,
-  
+        path: '/item/item-list',
+        element: <ItemList />,
+        auth: authRoles.admin,
     },
 ]
 

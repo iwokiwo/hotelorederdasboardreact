@@ -1,0 +1,14 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\src",
+    "\\src\\app",
+    "\\src\\app\\views",
+    "\\src\\app\\views\\dashboard",
+    "\\src\\app\\views\\item",
+    "\\src\\app\\views\\material-kit\\tables",
+    "\\src\\app\\views\\sessions"
+  ],
+  "SelectedNode": "\\src\\app\\RootRoutes.jsx",
+  "PreviewInSolutionExplorer": false
+}

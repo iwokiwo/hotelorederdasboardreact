@@ -90,14 +90,14 @@ function ShoppingCart({ container }) {
     const [panelOpen, setPanelOpen] = useState(false)
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const { user } = useAuth()
+    const { data } = JSON.parse(localStorage.getItem('useAuth'))
     const { cartList } = useSelector((state) => state.ecommerce)
     const { settings } = useSettings()
     const theme = useTheme()
     const secondary = theme.palette.text.secondary
 
     if (!cartListLoaded) {
-        dispatch(getCartList(user.id))
+        dispatch(getCartList(data.id))
         cartListLoaded = true
     }
 
@@ -162,7 +162,7 @@ function ShoppingCart({ container }) {
                                             onClick={() =>
                                                 dispatch(
                                                     updateCartAmount(
-                                                        user.id,
+                                                        data.id,
                                                         product.id,
                                                         product.amount + 1
                                                     )
@@ -179,7 +179,7 @@ function ShoppingCart({ container }) {
                                             onClick={() =>
                                                 dispatch(
                                                     updateCartAmount(
-                                                        user.id,
+                                                        data.id,
                                                         product.id,
                                                         product.amount - 1
                                                     )
@@ -208,7 +208,7 @@ function ShoppingCart({ container }) {
                                         onClick={() =>
                                             dispatch(
                                                 deleteProductFromCart(
-                                                    user.userId,
+                                                    data.id,
                                                     product.id
                                                 )
                                             )

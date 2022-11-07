@@ -6,6 +6,7 @@ import AppContext from '../contexts/AppContext'
 import { AllPages } from '../routes/routes'
 
 const getUserRoleAuthStatus = (pathname, user, routes) => {
+
     if (!user) {
         return false
     }
@@ -20,7 +21,13 @@ const getUserRoleAuthStatus = (pathname, user, routes) => {
 }
 
 const AuthGuard = ({ children }) => {
-    const { isAuthenticated, user } = useAuth()
+    JSON.parse(localStorage.getItem('useAuth')) === null && localStorage.setItem('useAuth',JSON.stringify({
+        data: [],
+        isAuthenticated: false,
+        isInitialised: false
+    }))
+
+    const { isAuthenticated, data } = JSON.parse(localStorage.getItem('useAuth'))
 
     // return <>{isAuthenticated ? children : <Navigate to="/session/signin" />}</>
 
@@ -28,14 +35,15 @@ const AuthGuard = ({ children }) => {
     const { pathname } = useLocation()
     const routes = flat(AllPages())
 
-    console.log(user)
+    console.log("useAuth()",useAuth())
 
     const isUserRoleAuthenticated = getUserRoleAuthStatus(
         pathname,
-        user,
+        data,
         routes
     )
     let authenticated = isAuthenticated && isUserRoleAuthenticated
+
 
     // IF YOU NEED ROLE BASED AUTHENTICATION,
     // UNCOMMENT ABOVE TWO LINES, getUserRoleAuthStatus METHOD AND user VARIABLE

@@ -9,7 +9,7 @@ const dataItem = selector({
         let product = null;
        
         try {
-            let {data} = await axios.get('/product')
+            let {data} = await axios.get('/api/v1/product')
             product ={product: data}
             console.log("lewat",product)
         } catch (error) {

@@ -6,7 +6,7 @@ import { MatxLoading } from 'app/components'
 const initialState = {
     isAuthenticated: false,
     isInitialised: false,
-    user: null,
+    data: null,
 }
 
 const isValidToken = (accessToken) => {
@@ -25,6 +25,7 @@ const setSession = (accessToken) => {
         axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`
     } else {
         localStorage.removeItem('accessToken')
+        localStorage.removeItem('useAuth')
         delete axios.defaults.headers.common.Authorization
     }
 }
@@ -32,38 +33,38 @@ const setSession = (accessToken) => {
 const reducer = (state, action) => {
     switch (action.type) {
         case 'INIT': {
-            const { isAuthenticated, user } = action.payload
+            const { isAuthenticated, data } = action.payload
 
             return {
                 ...state,
                 isAuthenticated,
                 isInitialised: true,
-                user,
+                data,
             }
         }
         case 'LOGIN': {
-            const { user } = action.payload
+            const { data } = action.payload
 
             return {
                 ...state,
                 isAuthenticated: true,
-                user,
+                data,
             }
         }
         case 'LOGOUT': {
             return {
                 ...state,
                 isAuthenticated: false,
-                user: null,
+                data: null,
             }
         }
         case 'REGISTER': {
-            const { user } = action.payload
+            const { data } = action.payload
 
             return {
                 ...state,
                 isAuthenticated: true,
-                user,
+                data,
             }
         }
         default: {
@@ -84,19 +85,26 @@ export const AuthProvider = ({ children }) => {
     const [state, dispatch] = useReducer(reducer, initialState)
 
     const login = async (email, password) => {
-        const response = await axios.post('/customer/login', {
+        const response = await axios.post('/api/v1/sessions', {
             email,
             password,
         })
         console.log(response)
-        const { accessToken, user } = response.data
+        const { meta, data } = response.data
 
-        setSession(accessToken)
+        setSession(data.token)
+
+        localStorage.setItem('useAuth',JSON.stringify({
+            data: data,
+            isAuthenticated: true,
+            isInitialised: true,
+            method: "JWT"
+        }))
 
         dispatch({
             type: 'LOGIN',
             payload: {
-                user,
+                data,
             },
         })
     }
@@ -121,6 +129,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     const logout = () => {
+        console.log("logout lewat")
         setSession(null)
         dispatch({ type: 'LOGOUT' })
     }

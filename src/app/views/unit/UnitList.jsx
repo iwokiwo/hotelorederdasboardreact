@@ -27,9 +27,11 @@ import { useNavigate } from 'react-router-dom'
 
 import { Box, styled, useTheme } from '@mui/system'
 import { Breadcrumb, SimpleCard } from 'app/components'
-import { useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import { Paragraph, Span } from 'app/components/Typography'
 import { dataUnit } from 'app/store/Unit'
+import { openMessage } from 'app/store/Controls'
+import controls from '../components'
 
 const CardHeader = styled('div')(() => ({
     paddingLeft: '24px',
@@ -97,7 +99,7 @@ const UnitList = () => {
     const bgPrimary = palette.primary.main
     const bgSecondary = palette.secondary.main
     const [open, setOpen] = React.useState(false)
-    const [openMessage, setOpenMessage] = React.useState(false)
+    const [notif, setNotif] = useRecoilState(openMessage)
     //const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
     const theme = useTheme()
 
@@ -109,11 +111,11 @@ const UnitList = () => {
 
     function handleClose() {
         setOpen(false)
-        setOpenMessage(true)
-    }
-
-    function handleCloseMassage() {
-        setOpenMessage(false)
+        setNotif({
+            isOpen: true,
+            message: "Success",
+            type: 'success'
+          })
     }
 
 
@@ -151,7 +153,8 @@ const UnitList = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {unit.data.map((data, index) => (
+                        {console.log("lewat sini lagi")}
+                        { unit.data.map((data, index) => (
                             <TableRow key={index} hover>
                                 <TableCell
                                     colSpan={4}
@@ -218,8 +221,8 @@ const UnitList = () => {
                     </Button>
                 </DialogActions>
             </Dialog>
-
-            <Snackbar open={openMessage} autoHideDuration={6000} onClose={handleCloseMassage}>
+{/* 
+            <Snackbar open={openMessages} autoHideDuration={6000} onClose={handleCloseMassage}>
                 <Alert
                     onClose={handleClose}
                     severity="success"
@@ -228,7 +231,8 @@ const UnitList = () => {
                 >
                     This is a success message!
                 </Alert>
-            </Snackbar>
+            </Snackbar> */}
+            <controls.Notification />
         </Container>
     )
 }

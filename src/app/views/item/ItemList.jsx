@@ -112,7 +112,13 @@ const ItemList = () => {
                                 Name
                             </TableCell>
                             <TableCell sx={{ px: 0 }} colSpan={2}>
-                                Type
+                                Unit
+                            </TableCell>
+                            <TableCell sx={{ px: 0 }} colSpan={2}>
+                                Category
+                            </TableCell>
+                            <TableCell sx={{ px: 0 }} colSpan={2}>
+                                HPP
                             </TableCell>
                             <TableCell sx={{ px: 0 }} colSpan={2}>
                                 Price
@@ -126,7 +132,7 @@ const ItemList = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {product.products.map((product, index) => (
+                        {product.data.map((product, index) => (
                             <TableRow key={index} hover>
                                 <TableCell
                                     colSpan={4}
@@ -134,7 +140,7 @@ const ItemList = () => {
                                     sx={{ px: 0, textTransform: 'capitalize' }}
                                 >
                                     <Box display="flex" alignItems="center">
-                                        <Avatar src={product.banner} />
+                                        <Avatar src={product.thumbnail} />
                                         <Paragraph sx={{ m: 0, ml: 4 }}>
                                             {product.name}
                                         </Paragraph>
@@ -145,7 +151,21 @@ const ItemList = () => {
                                     colSpan={2}
                                     sx={{ px: 0, textTransform: 'capitalize' }}
                                 >
-                                 {product.type}
+                                 {product.unit.Name}
+                                </TableCell>
+                                <TableCell
+                                    align="left"
+                                    colSpan={2}
+                                    sx={{ px: 0, textTransform: 'capitalize' }}
+                                >
+                                 {product.category.Name}
+                                </TableCell>
+                                <TableCell
+                                    align="left"
+                                    colSpan={2}
+                                    sx={{ px: 0, textTransform: 'capitalize' }}
+                                >
+                                 {product.hpp}
                                 </TableCell>
                                 <TableCell
                                     align="left"
@@ -164,10 +184,10 @@ const ItemList = () => {
                                     align="left"
                                     colSpan={2}
                                 >
-                                    {product.unit ? (
-                                        product.unit < 20 ? (
+                                    {product.stock ? (
+                                        product.stock < 20 ? (
                                             <Small bgcolor={bgSecondary}>
-                                                {product.unit} available
+                                                {product.stock} available
                                             </Small>
                                         ) : (
                                             <Small bgcolor={bgPrimary}>

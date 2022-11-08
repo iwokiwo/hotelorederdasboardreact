@@ -2,14 +2,14 @@ import axios from 'axios.js'
 
 import { selector } from 'recoil'
 
-const dataItem = selector({
-    key: 'data-product',
+const dataCategory = selector({
+    key: 'data-category',
 
     get: async () => {
-        let product = null;
+        let category = null;
        
         try {
-            let {data} = await axios.post('/api/v1/product',{
+            let {data} = await axios.post('/api/v1/front/categories',{
                 Page:1,
                 Size:10,
                 Sort:"created_at desc",
@@ -22,14 +22,13 @@ const dataItem = selector({
                   'Accept':'application/json',
                   'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
                 }})
-            product ={product: data}
-            console.log("lewat",product)
+                category ={category: data}
         } catch (error) {
-            product=  {product: error}
+            category=  {category: error}
         }
 
-        return product
+        return category
     }
 })
 
-export {dataItem}
+export {dataCategory}

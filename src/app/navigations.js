@@ -6,23 +6,23 @@ export const navigations = [
     },
  
     {
-        name: 'ITEM',
+        name: 'Master Data',
         icon: 'security',
         children: [
             {
-                name: 'List Items',
+                name: 'Items',
                 iconText: 'SI',
                 path: '/item/item-list',
             },
             {
-                name: 'List Kategory',
+                name: 'Category',
                 iconText: 'SU',
-                path: '/session/signup',
+                path: '/category/category-list',
             },
             {
                 name: 'Unit/Satuan',
                 iconText: 'FP',
-                path: '/session/forgot-password',
+                path: '/unit/unit-list',
             },
             {
                 name: 'Error',

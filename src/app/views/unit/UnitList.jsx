@@ -11,7 +11,18 @@ import {
     Select,
     Button,
     Avatar,
+    TextField,
+    Grid,
+    Snackbar,
+    Alert,
 } from '@mui/material'
+import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import DialogContentText from '@mui/material/DialogContentText'
+
 import { useNavigate } from 'react-router-dom'
 
 import { Box, styled, useTheme } from '@mui/system'
@@ -77,6 +88,7 @@ const Container = styled('div')(({ theme }) => ({
     },
 }))
 
+
 const UnitList = () => {
     const navigate = useNavigate()
     const {unit} = useRecoilValue(dataUnit)
@@ -84,6 +96,27 @@ const UnitList = () => {
     const bgError = palette.error.main
     const bgPrimary = palette.primary.main
     const bgSecondary = palette.secondary.main
+    const [open, setOpen] = React.useState(false)
+    const [openMessage, setOpenMessage] = React.useState(false)
+    //const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
+    const theme = useTheme()
+
+    
+    function handleClickOpen() {
+        console.log("unit")
+        setOpen(true)
+    }
+
+    function handleClose() {
+        setOpen(false)
+        setOpenMessage(true)
+    }
+
+    function handleCloseMassage() {
+        setOpenMessage(false)
+    }
+
+
 
     return (
         <Container>
@@ -96,8 +129,8 @@ const UnitList = () => {
             </div>
             <Card elevation={3} sx={{ pt: '20px', mb: 3 }}>
             <CardHeader>
-                <Title>Category</Title>
-                <Button color="primary" variant="contained" onClick={()=> navigate('/material/form')}>
+                <Title>Unit</Title>
+                <Button color="primary" variant="contained" onClick={handleClickOpen}>
 
                     <Span sx={{ pl: 1, textTransform: 'capitalize' }}>
                         Add Unit
@@ -141,6 +174,61 @@ const UnitList = () => {
                 </ProductTable>
             </Box>
         </Card>
+
+        <Dialog
+                //fullScreen={fullScreen}
+                fullWidth="true"
+                maxWidth="sm"
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="responsive-dialog-title"
+            >
+                <DialogTitle id="responsive-dialog-title">
+                    {"New Unit"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                    <Grid container spacing={12}>
+                    <Grid item lg={12} md={12} sm={12} xs={12} sx={{ mt: 2 }}>
+                    <TextField
+                            fullWidth="true"
+                            type="text"
+                            name="username"
+                            id="standard-basic"
+                            // onChange={handleChange}
+                            // value={username || ''}
+                            validators={[
+                                'required',
+                                'minStringLength: 4',
+                                'maxStringLength: 9',
+                            ]}
+                            label="Username (Min length 4, Max length 9)"
+                            errorMessages={['this field is required']}
+                        />
+                        </Grid>
+                        </Grid>
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose} color="primary">
+                        Cencel
+                    </Button>
+                    <Button onClick={handleClose} color="primary" autoFocus>
+                        Save
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            <Snackbar open={openMessage} autoHideDuration={6000} onClose={handleCloseMassage}>
+                <Alert
+                    onClose={handleClose}
+                    severity="success"
+                    sx={{ width: '100%' }}
+                    variant="filled"
+                >
+                    This is a success message!
+                </Alert>
+            </Snackbar>
         </Container>
     )
 }

@@ -1,12 +1,14 @@
 import Notification from "./notif"
+import ActionButton from "./actionButton"
+import popup from "./popup";
 
 const controls ={
     // Input,
     // TablePaggination,
-    // ActionButton,
+    ActionButton,
     // Button,
-    Notification
+    Notification,
     // ConfirmDialog,
-    // popup
+    popup
 }
 export default controls;

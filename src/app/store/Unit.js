@@ -2,7 +2,8 @@ import axios from 'axios.js'
 
 import { selector } from 'recoil'
 
-const dataUnit = selector({
+
+export const dataUnit = selector({
     key: 'data-unit',
 
     get: async () => {
@@ -30,5 +31,3 @@ const dataUnit = selector({
         return unit
     }
 })
-
-export {dataUnit}

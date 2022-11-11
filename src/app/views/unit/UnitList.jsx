@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback, useEffect } from 'react'
 import {
     Table,
     TableHead,
@@ -23,13 +23,17 @@ import { Paragraph, Span } from 'app/components/Typography'
 import { Box, styled, useTheme } from '@mui/system'
 
 import { Breadcrumb, SimpleCard } from 'app/components'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useRecoilRefresher_UNSTABLE, useRecoilState, useRecoilValue } from 'recoil'
 import * as yup from 'yup';
 import { useFormik } from 'formik'
 
-import { dataUnit } from 'app/store/Unit'
+import { dataUnit, paginationAtom } from 'app/store/Unit'
 import { openMessage, popupState } from 'app/store/Controls'
 import controls from '../components'
+import { pagination } from 'app/store/Pagination'
+import * as getdata from 'app/services/getDataWithPagination'
+import { urlUnit } from 'app/store/Url'
+
 
 
 const useStyles = makeStyles((theme) => ({
@@ -99,35 +103,41 @@ const Container = styled('div')(({ theme }) => ({
 
 const validationSchema = yup.object({
     name: yup
-      .string('Enter Name ')
-      .required('Name is required'),
-  
-  });
+        .string('Enter Name ')
+        .required('Name is required'),
+
+});
 
 
 const UnitList = () => {
     const classes = useStyles();
     const { unit } = useRecoilValue(dataUnit)
-    const [open, setOpen] = React.useState(false)
     const [notif, setNotif] = useRecoilState(openMessage)
     const [popupStates, setPopupStates] = useRecoilState(popupState)
+    const [paginationState, setPaginationState] = useRecoilState(pagination)
 
 
     const formik = useFormik({
         initialValues: {
-        //   name: edit == undefined ? '':edit.name,
-        //   id: edit == undefined ? '':edit.id,
+            //   name: edit == undefined ? '':edit.name,
+            //   id: edit == undefined ? '':edit.id,
 
-          name: "",
-          id: " ",
+            name: "",
+            id: " ",
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
-          console.log(values.name)
-         // addKategori(values)
-          //alert(JSON.stringify(values, null, 2));
+
+            // setPaginationState({
+            //     ...paginationState,
+            //     Page: 2
+            // })
+            // console.log(paginationState.Page)
+
+            // addKategori(values)
+            //alert(JSON.stringify(values, null, 2));
         },
-      });
+    });
 
 
     const handleClickOpen = () => {
@@ -139,13 +149,21 @@ const UnitList = () => {
     }
 
     function handleClose() {
-        setOpen(false)
+
         setNotif({
             isOpen: true,
             message: "Success",
             type: 'success'
         })
     }
+
+    const GetData2 = () => {
+        setPaginationState({
+            ...paginationState,
+            Page: 2
+        })
+    }
+
     return (
         <Container>
             <div className="breadcrumb">
@@ -173,7 +191,6 @@ const UnitList = () => {
                                 <TableCell sx={{ px: 3 }} colSpan={4}>
                                     Name
                                 </TableCell>
-
                                 <TableCell sx={{ px: 0 }} colSpan={1}>
                                     Action
                                 </TableCell>
@@ -188,9 +205,7 @@ const UnitList = () => {
                                         align="left"
                                         sx={{ px: 0, textTransform: 'capitalize' }}
                                     >
-
-                                        {data.Name}
-
+                                    {data.Name}
                                     </TableCell>
 
                                     <TableCell sx={{ px: 0 }} colSpan={1}>
@@ -206,30 +221,38 @@ const UnitList = () => {
             </Card>
 
             <controls.Notification />
-            
+
             <controls.popup>
-            <form onSubmit={formik.handleSubmit}>
-                <Grid container spacing={12}>
+                <form onSubmit={formik.handleSubmit}>
+                    <Grid container spacing={12}>
                         <Grid item lg={12} md={12} sm={12} xs={12} sx={{ mt: 2 }}>
-                         
-                                <TextField
-                                    fullWidth
-                                    id="name"
-                                    name="name"
-                                    label="Unit"
-                                    value={formik.values.name}
-                                    onChange={formik.handleChange}
-                                    error={formik.touched.name && Boolean(formik.errors.name)}
-                                    helperText={formik.touched.name && formik.errors.name}
-                                />
-                                
-                                <Button color="primary" variant="contained" type="submit" sx={{ mt: 2 }}>
-                                    Submit
-                                </Button>
-                      
+
+                            <TextField
+                                fullWidth
+                                id="name"
+                                name="name"
+                                label="Unit"
+                                value={formik.values.name}
+                                onChange={formik.handleChange}
+                                error={formik.touched.name && Boolean(formik.errors.name)}
+                                helperText={formik.touched.name && formik.errors.name}
+                            />
+
+                            <Button color="primary" variant="contained" type="submit" sx={{ mt: 2 }}>
+                                Submit
+                            </Button>
+
+
+                            <controls.ActionButton
+                                color="secondary"
+                                onClick={() => { GetData2() }}
+                            >
+                                tes
+                            </controls.ActionButton>
+
 
                         </Grid>
-                </Grid>
+                    </Grid>
                 </form>
             </controls.popup>
         </Container>

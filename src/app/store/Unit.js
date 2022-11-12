@@ -55,18 +55,9 @@ export const getDataUnit = selector({
         console.log("lewat getData")
         const pages = get(openMessage)
         try {
-            console.log("lewat try")
-            await PostData(urlUnit,pagination).then((value) => 
-            unit ={unit: value}
+            await PostData(urlUnit, pagination).then((value) =>
+                unit = { unit: value }
             )
-            // let {data} =  await axios.post('/api/v1/front/unit',{
-            //     headers: {
-            //       'Content-Type': 'application/json',
-            //       'Accept':'application/json',
-            //       'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
-            //     }})
-            //     unit ={unit: data}
-            //     console.log(localStorage.getItem('accessToken'))
         } catch (error) {
           
             unit=  {unit: []}

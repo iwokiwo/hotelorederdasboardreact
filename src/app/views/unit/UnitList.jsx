@@ -1,22 +1,14 @@
 import React, { useCallback, useEffect } from 'react'
 import {
     Table,
-    TableHead,
     TableCell,
     TableBody,
-    IconButton,
-    Icon,
     TableRow,
     Card,
-    Select,
     Button,
-    Avatar,
     TextField,
     Grid,
-    Snackbar,
-    Alert,
     Paper,
-    Divider,
     InputAdornment,
     CardContent,
 } from '@mui/material'
@@ -40,10 +32,6 @@ import { isEmpty } from 'lodash'
 import useTable from '../components/useTable'
 import { urlCreateUnit, urlDeleteUnit, urlUpdateUnit } from 'app/utils/constant'
 
-
-
-
-
 const useStyles = makeStyles((theme) => ({
     paper: {
         padding: theme.spacing(2),
@@ -59,41 +47,6 @@ const CardHeader = styled('div')(() => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-}))
-
-const ProductTable = styled(Table)(() => ({
-    minWidth: 400,
-    whiteSpace: 'pre',
-    '& small': {
-        height: 15,
-        width: 50,
-        borderRadius: 500,
-        boxShadow:
-            '0 0 2px 0 rgba(0, 0, 0, 0.12), 0 2px 2px 0 rgba(0, 0, 0, 0.24)',
-    },
-    '& td': {
-        borderBottom: 'none',
-    },
-    '& td:first-of-type': {
-        paddingLeft: '16px !important',
-    },
-}))
-
-const Small = styled('small')(({ bgcolor }) => ({
-    height: 15,
-    width: 50,
-    color: '#fff',
-    padding: '2px 8px',
-    borderRadius: '4px',
-    overflow: 'hidden',
-    background: bgcolor,
-    boxShadow: '0 0 2px 0 rgba(0, 0, 0, 0.12), 0 2px 2px 0 rgba(0, 0, 0, 0.24)',
-}))
-
-const Title = styled('span')(() => ({
-    fontSize: '1rem',
-    fontWeight: '500',
-    textTransform: 'capitalize',
 }))
 
 const Container = styled('div')(({ theme }) => ({
@@ -251,49 +204,6 @@ const UnitList = () => {
                         </Span>
                     </Button>
                 </CardHeader>
-                {/* <Box overflow="auto">
-                    <ProductTable>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell sx={{ px: 3 }} colSpan={4}>
-                                    Name
-                                </TableCell>
-                                <TableCell sx={{ px: 0 }} colSpan={1}>
-                                    Action
-                                </TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            
-                            {unit.data !== undefined && unit.data.map((data, index) => (
-                                <TableRow key={data.ID} hover>
-                                    <TableCell
-                                        colSpan={4}
-                                        align="left"
-                                        sx={{ px: 0, textTransform: 'capitalize' }}
-                                    >
-                                    {data.Name}
-                                    </TableCell>
-
-                                    <TableCell sx={{ px: 0 }} colSpan={1}>
-                                        <IconButton onClick={()=>{
-                                            formik.values.id = data.ID
-                                            formik.values.name = data.Name
-                                            setPopupStates({
-                                                title: "Edit Unit",
-                                                openPopup: true,
-                                                size: "sm"
-                                            })
-                                        }
-                                            }>
-                                            <Icon color="primary">edit</Icon>
-                                        </IconButton>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </ProductTable> 
-                </Box>*/}
                 <CardContent>
                 <TblContainer component={Paper}>
                         <Table aria-label="a dense table" size="small" >

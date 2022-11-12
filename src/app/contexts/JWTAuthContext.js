@@ -130,7 +130,6 @@ export const AuthProvider = ({ children }) => {
     }
 
     const logout = () => {
-        console.log("logout lewat")
         setSession(null)
         dispatch({ type: 'LOGOUT' })
     }

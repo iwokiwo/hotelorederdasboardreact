@@ -9,3 +9,8 @@ export const popupState = atom({
     key: 'popupState',
     default: {title: '', openPopup: false, size: 'sm'}
 })
+
+export const confirmDialogState = atom({
+    key: 'confirmDialogState',
+    default: { isOpen: false, title: '', subTitle: '' }
+})

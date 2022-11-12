@@ -17,7 +17,7 @@ function Notification(props) {
     // const {notif,setNotif} = props;
     const { classes } = props;
     const handleClose = (event,reason)=>{
-        if(reason=='clickaway'){
+        if(reason==='clickaway'){
             return;
         }
         setNotif({

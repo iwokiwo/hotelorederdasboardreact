@@ -1,7 +1,7 @@
 import { atom } from "recoil";
 
 export const pagination = atom({
-    key: 'openMessage',
+    key: 'pagination',
     default: {  
         Page:1,
         Size:10,

@@ -17,10 +17,14 @@ import {
     Alert,
     Paper,
     Divider,
+    InputAdornment,
+    CardContent,
 } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { Paragraph, Span } from 'app/components/Typography'
 import { Box, styled, useTheme } from '@mui/system'
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import DeleteIcon from '@mui/icons-material/DeleteOutline';
 
 import { Breadcrumb, SimpleCard } from 'app/components'
 import { useRecoilState, useRecoilValue } from 'recoil'
@@ -28,11 +32,14 @@ import * as yup from 'yup';
 import { useFormik } from 'formik'
 
 import { createDataUnit, dataUnit, getDataUnit } from 'app/store/Unit'
-import { openMessage, popupState } from 'app/store/Controls'
+import { confirmDialogState, openMessage, popupState } from 'app/store/Controls'
 import controls from '../components'
 import { pagination } from 'app/store/Pagination'
 import { PostData } from 'app/services/postData'
 import { isEmpty } from 'lodash'
+import useTable from '../components/useTable'
+import { urlCreateUnit, urlDeleteUnit, urlUpdateUnit } from 'app/utils/constant'
+
 
 
 
@@ -112,64 +119,62 @@ const validationSchema = yup.object({
 
 const UnitList = () => {
     const classes = useStyles();
-    const {unit} = useRecoilValue(getDataUnit)
-
-     const [createState, setCreateState] = useRecoilState(dataUnit)
+    const { unit } = useRecoilValue(getDataUnit)
+    const [valuesSearch, setValuesSearch] = React.useState('');
+    const [filterFn, setFilterFn] = React.useState({ fn: items => { return items; } });
+    const [createState, setCreateState] = useRecoilState(dataUnit)
     const [notif, setNotif] = useRecoilState(openMessage)
+    const [confirmDialog, setConfirmDialog] = useRecoilState(confirmDialogState)
     const [popupStates, setPopupStates] = useRecoilState(popupState)
+
     const [paginationState, setPaginationState] = useRecoilState(pagination)
 
+    const headCells = [
+
+        { id: 'ID', lable: 'SN', align: "left" },
+        { id: 'Name', lable: 'Name', align: "left" },
+        { id: 'action', lable: 'Action', disableSorting: true, align: "center" },
+    ]
+
+    const {
+        TblContainer,
+        TblHead,
+        TblPagination,
+        recordsAfterPagingAndSort
+    } = useTable(unit.data, headCells, filterFn);
 
     const formik = useFormik({
         initialValues: {
-            //   name: edit == undefined ? '':edit.name,
-            //   id: edit == undefined ? '':edit.id,
-
             name: "",
             id: " ",
         },
         validationSchema: validationSchema,
-        onSubmit: (values) => {          
- 
-            let url = '/api/v1/unit/update'
-            if(Number(values.id) === 0) url = '/api/v1/unit/create'
-    
-            PostData(url,values).then((value) =>    
-            setNotif({
-                isOpen: true,
-                message: value.message,
-                type: value.staus
-            }) )
+        onSubmit: (values) => {
+            let url = urlUpdateUnit
+            if (Number(values.id) === 0) url = urlCreateUnit
+
+            PostData(url, values).then((value) =>
+                setNotif({
+                    isOpen: true,
+                    message: value.message,
+                    type: value.staus
+                }))
             setPopupStates({
                 ...popupStates,
                 openPopup: false
             })
-
-
-            // const {createData} = useRecoilValue(createDataUnit)
-            // console.log("createData",createData)
-            // setPaginationState({
-            //     ...paginationState,
-            //     Page: 2
-            // })
-            // console.log(paginationState.Page)
-
-            // addKategori(values)
-            //alert(JSON.stringify(values, null, 2));
         },
     });
 
-
     const handleClickOpen = () => {
         formik.values.id = 0
-        formik.values.name =""
+        formik.values.name = ""
         setPopupStates({
             title: "Add Unit",
             openPopup: true,
             size: "sm"
         })
     }
-
 
     const GetData2 = () => {
         setPaginationState({
@@ -178,10 +183,47 @@ const UnitList = () => {
         })
     }
 
+    const handleChange = (e) => {
+        let target = e.target;
+        setValuesSearch({ valuesSearch: target.value });
+
+    }
+
+    const onDelete = (values) => {
+        console.log("delete",values) 
+
+        PostData(urlDeleteUnit, values).then((value) =>
+        setNotif({
+            isOpen: true,
+            message: value.message,
+            type: value.staus
+        }))
+
+        setConfirmDialog({
+            ...confirmDialog,
+            isOpen: false
+        })
+
+
+    }
+
+    useEffect(() => {
+        setFilterFn({
+            fn: items => {
+                if (isEmpty(valuesSearch.valuesSearch)) {
+                    return items = unit.data
+                }
+                else {
+                    return items = unit.data.filter(x => x.Name.toUpperCase().includes(valuesSearch.valuesSearch.toUpperCase()));
+                }
+            }
+        })
+    }, [valuesSearch,notif])
+
+
     return (
-       
+
         <Container>
-             {console.log(unit.data)}
             <div className="breadcrumb">
                 <Breadcrumb
                     routeSegments={[
@@ -190,9 +232,18 @@ const UnitList = () => {
                 />
             </div>
 
-            <Card elevation={3} sx={{ pt: '20px', mb: 3 }}>
+            <Card elevation={3} sx={{ pt: '20px', mb: 2 }}>
                 <CardHeader>
-                    <Title>Unit</Title>
+                    {/* <Title>Unit</Title> */}
+                    <controls.Input
+                        name="cariProduk"
+                        label="Search"
+                        InputProps={{
+                            startAdornment: (<InputAdornment position="start">
+                            </InputAdornment>)
+                        }}
+                        onChange={handleChange}
+                    />
                     <Button color="primary" variant="contained" onClick={handleClickOpen}>
 
                         <Span sx={{ pl: 1, textTransform: 'capitalize' }}>
@@ -200,7 +251,7 @@ const UnitList = () => {
                         </Span>
                     </Button>
                 </CardHeader>
-                <Box overflow="auto">
+                {/* <Box overflow="auto">
                     <ProductTable>
                         <TableHead>
                             <TableRow>
@@ -241,11 +292,60 @@ const UnitList = () => {
                                 </TableRow>
                             ))}
                         </TableBody>
-                    </ProductTable>
-                </Box>
+                    </ProductTable> 
+                </Box>*/}
+                <CardContent>
+                <TblContainer component={Paper}>
+                        <Table aria-label="a dense table" size="small" >
+                            <TblHead />
+                            <TableBody>
+                                {recordsAfterPagingAndSort().map(row => (
+                                    <TableRow key={row.ID}>
+                                        <TableCell component="th" scope="row">
+                                            {row.ID}
+                                        </TableCell>
+                                        <TableCell align="left">{row.Name}</TableCell>
+
+                                        <TableCell align='center'>
+                                            <controls.ActionButton
+                                                color="primary"
+                                                onClick={() => {
+                                                    formik.values.id = row.ID
+                                                    formik.values.name = row.Name
+                                                    setPopupStates({
+                                                        title: "Edit Unit",
+                                                        openPopup: true,
+                                                        size: "sm"
+                                                    })
+                                                }}
+                                            >
+                                                <EditOutlinedIcon fontSize="small" />
+                                            </controls.ActionButton>
+                                            <controls.ActionButton
+                                                color="primary"
+                                            onClick={() => {
+                                            setConfirmDialog({
+                                                isOpen: true,
+                                                title: `Are you sure to delete ${row.Name} ?`,
+                                                subTitle: "You can't undo this operation",
+                                                onConfirm: () => { onDelete(row) }
+                                            })
+                                            }}
+                                            >
+                                                <DeleteIcon fontSize="small" />
+                                            </controls.ActionButton>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TblContainer>
+                    <TblPagination />
+                </CardContent>
             </Card>
 
             <controls.Notification />
+            <controls.ConfirmDialog />
 
             <controls.popup>
                 <form onSubmit={formik.handleSubmit}>
@@ -267,13 +367,13 @@ const UnitList = () => {
                                 Submit
                             </Button>
 
-
+{/* 
                             <controls.ActionButton
                                 color="secondary"
                                 onClick={() => { GetData2() }}
                             >
                                 tes
-                            </controls.ActionButton>
+                            </controls.ActionButton> */}
 
 
                         </Grid>

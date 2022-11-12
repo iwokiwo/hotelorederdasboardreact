@@ -24,6 +24,7 @@ const setSession = (accessToken) => {
         localStorage.setItem('accessToken', accessToken)
         axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`
     } else {
+        console.log("lewat session")
         localStorage.removeItem('accessToken')
         localStorage.removeItem('useAuth')
         delete axios.defaults.headers.common.Authorization
@@ -138,17 +139,19 @@ export const AuthProvider = ({ children }) => {
         ; (async () => {
             try {
                 const accessToken = window.localStorage.getItem('accessToken')
-
-                if (accessToken && isValidToken(accessToken)) {
+                // console.log("isValidToken(accessToken)",isValidToken(accessToken))
+               // if (accessToken && isValidToken(accessToken)) {
+                if (accessToken) {
+                   // console.log("localStorage",localStorage.setItem('useAuth'))
                     setSession(accessToken)
-                    const response = await axios.get('/api/auth/profile')
-                    const { user } = response.data
+                    // const response = await axios.get('/api/auth/profile')
+                    // const { user } = response.data
 
                     dispatch({
                         type: 'INIT',
                         payload: {
                             isAuthenticated: true,
-                            user,
+                            //user:[],
                         },
                     })
                 } else {

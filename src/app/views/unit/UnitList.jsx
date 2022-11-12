@@ -23,16 +23,17 @@ import { Paragraph, Span } from 'app/components/Typography'
 import { Box, styled, useTheme } from '@mui/system'
 
 import { Breadcrumb, SimpleCard } from 'app/components'
-import { useRecoilRefresher_UNSTABLE, useRecoilState, useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import * as yup from 'yup';
 import { useFormik } from 'formik'
 
-import { dataUnit, paginationAtom } from 'app/store/Unit'
+import { createDataUnit, dataUnit, getDataUnit } from 'app/store/Unit'
 import { openMessage, popupState } from 'app/store/Controls'
 import controls from '../components'
 import { pagination } from 'app/store/Pagination'
-import * as getdata from 'app/services/getDataWithPagination'
-import { urlUnit } from 'app/store/Url'
+import { PostData } from 'app/services/postData'
+import { isEmpty } from 'lodash'
+
 
 
 
@@ -111,7 +112,9 @@ const validationSchema = yup.object({
 
 const UnitList = () => {
     const classes = useStyles();
-    const { unit } = useRecoilValue(dataUnit)
+    const {unit} = useRecoilValue(getDataUnit)
+
+     const [createState, setCreateState] = useRecoilState(dataUnit)
     const [notif, setNotif] = useRecoilState(openMessage)
     const [popupStates, setPopupStates] = useRecoilState(popupState)
     const [paginationState, setPaginationState] = useRecoilState(pagination)
@@ -126,8 +129,25 @@ const UnitList = () => {
             id: " ",
         },
         validationSchema: validationSchema,
-        onSubmit: (values) => {
+        onSubmit: (values) => {          
+ 
+            let url = '/api/v1/unit/update'
+            if(Number(values.id) === 0) url = '/api/v1/unit/create'
+    
+            PostData(url,values).then((value) =>    
+            setNotif({
+                isOpen: true,
+                message: value.message,
+                type: value.staus
+            }) )
+            setPopupStates({
+                ...popupStates,
+                openPopup: false
+            })
 
+
+            // const {createData} = useRecoilValue(createDataUnit)
+            // console.log("createData",createData)
             // setPaginationState({
             //     ...paginationState,
             //     Page: 2
@@ -141,6 +161,8 @@ const UnitList = () => {
 
 
     const handleClickOpen = () => {
+        formik.values.id = 0
+        formik.values.name =""
         setPopupStates({
             title: "Add Unit",
             openPopup: true,
@@ -148,14 +170,6 @@ const UnitList = () => {
         })
     }
 
-    function handleClose() {
-
-        setNotif({
-            isOpen: true,
-            message: "Success",
-            type: 'success'
-        })
-    }
 
     const GetData2 = () => {
         setPaginationState({
@@ -165,7 +179,9 @@ const UnitList = () => {
     }
 
     return (
+       
         <Container>
+             {console.log(unit.data)}
             <div className="breadcrumb">
                 <Breadcrumb
                     routeSegments={[
@@ -197,9 +213,9 @@ const UnitList = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {console.log("lewat sini lagi")}
-                            {unit.data.map((data, index) => (
-                                <TableRow key={index} hover>
+                            
+                            {unit.data !== undefined && unit.data.map((data, index) => (
+                                <TableRow key={data.ID} hover>
                                     <TableCell
                                         colSpan={4}
                                         align="left"
@@ -209,7 +225,16 @@ const UnitList = () => {
                                     </TableCell>
 
                                     <TableCell sx={{ px: 0 }} colSpan={1}>
-                                        <IconButton>
+                                        <IconButton onClick={()=>{
+                                            formik.values.id = data.ID
+                                            formik.values.name = data.Name
+                                            setPopupStates({
+                                                title: "Edit Unit",
+                                                openPopup: true,
+                                                size: "sm"
+                                            })
+                                        }
+                                            }>
                                             <Icon color="primary">edit</Icon>
                                         </IconButton>
                                     </TableCell>

@@ -24,13 +24,15 @@ import * as yup from 'yup';
 import { useFormik } from 'formik'
 
 import { createDataUnit, dataUnit, getDataUnit } from 'app/store/Unit'
-import { confirmDialogState, openMessage, popupState } from 'app/store/Controls'
+import { confirmDialogState, openMessage, popupState, reload } from 'app/store/Controls'
 import controls from '../components'
 import { pagination } from 'app/store/Pagination'
 import { PostData } from 'app/services/postData'
 import { isEmpty } from 'lodash'
 import useTable from '../components/useTable'
 import { urlCreateUnit, urlDeleteUnit, urlUpdateUnit } from 'app/utils/constant'
+import { PutData } from 'app/services/putData'
+import { now } from 'moment/moment'
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -71,7 +73,7 @@ const validationSchema = yup.object({
 
 
 const UnitList = () => {
-    const classes = useStyles();
+    const classes = useStyles()
     const { unit } = useRecoilValue(getDataUnit)
     const [valuesSearch, setValuesSearch] = React.useState('');
     const [filterFn, setFilterFn] = React.useState({ fn: items => { return items; } });
@@ -79,6 +81,7 @@ const UnitList = () => {
     const [notif, setNotif] = useRecoilState(openMessage)
     const [confirmDialog, setConfirmDialog] = useRecoilState(confirmDialogState)
     const [popupStates, setPopupStates] = useRecoilState(popupState)
+    const [reloadState, setReloadState] = useRecoilState(reload)
 
     const [paginationState, setPaginationState] = useRecoilState(pagination)
 
@@ -103,21 +106,42 @@ const UnitList = () => {
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
-            let url = urlUpdateUnit
-            if (Number(values.id) === 0) url = urlCreateUnit
+            if (Number(values.id) === 0) {
+                //CreateData(values)
+                PostData(urlCreateUnit, values).then((value) =>
+                    setNotif({
+                        isOpen: true,
+                        message: value.message,
+                        type: value.staus
+                    }))
+               
+            } else {
+                const data = PutData(urlUpdateUnit, values)
+                data.then((value) =>
+                    setNotif({
+                        isOpen: true,
+                        message: value.message,
+                        type: value.staus
+                    }))
+               
+            }
 
-            PostData(url, values).then((value) =>
-                setNotif({
-                    isOpen: true,
-                    message: value.message,
-                    type: value.staus
-                }))
             setPopupStates({
                 ...popupStates,
                 openPopup: false
             })
+
+            setReloadState(now())
+
+          
         },
     });
+
+    const CreateData = (data) => {
+        // console.log("postData", data)
+        // const postData = useRecoilValue(createDataUnit(data))
+        // console.log("postData", postData)
+    }
 
     const handleClickOpen = () => {
         formik.values.id = 0
@@ -127,6 +151,7 @@ const UnitList = () => {
             openPopup: true,
             size: "sm"
         })
+       
     }
 
     const GetData2 = () => {
@@ -143,21 +168,73 @@ const UnitList = () => {
     }
 
     const onDelete = (values) => {
-        console.log("delete",values) 
-
         PostData(urlDeleteUnit, values).then((value) =>
-        setNotif({
-            isOpen: true,
-            message: value.message,
-            type: value.staus
-        }))
-
+            setNotif({
+                isOpen: true,
+                message: value.message,
+                type: value.staus
+            }))
+    
         setConfirmDialog({
             ...confirmDialog,
             isOpen: false
         })
+        setReloadState(now())
 
+    }
 
+    const RrenderTable = () => {
+
+        return (
+            <>
+                <TblContainer component={Paper}>
+                    <Table aria-label="a dense table" size="small" >
+                        <TblHead />
+                        <TableBody>
+                            {recordsAfterPagingAndSort().map(row => (
+                                <TableRow key={row.ID}>
+                                    <TableCell component="th" scope="row">
+                                        {row.ID}
+                                    </TableCell>
+                                    <TableCell align="left">{row.Name}</TableCell>
+
+                                    <TableCell align='center'>
+                                        <controls.ActionButton
+                                            color="primary"
+                                            onClick={() => {
+                                                formik.values.id = row.ID
+                                                formik.values.name = row.Name
+                                                setPopupStates({
+                                                    title: "Edit Unit",
+                                                    openPopup: true,
+                                                    size: "sm"
+                                                })
+                                            }}
+                                        >
+                                            <EditOutlinedIcon fontSize="small" />
+                                        </controls.ActionButton>
+                                        <controls.ActionButton
+                                            color="primary"
+                                            onClick={() => {
+                                                setConfirmDialog({
+                                                    isOpen: true,
+                                                    title: `Are you sure to delete ${row.Name} ?`,
+                                                    subTitle: "You can't undo this operation",
+                                                    onConfirm: () => { onDelete(row) }
+                                                })
+                                            }}
+                                        >
+                                            <DeleteIcon fontSize="small" />
+                                        </controls.ActionButton>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TblContainer>
+                <TblPagination />
+            </>
+        )
     }
 
     useEffect(() => {
@@ -171,7 +248,7 @@ const UnitList = () => {
                 }
             }
         })
-    }, [valuesSearch,notif])
+    }, [valuesSearch, notif])
 
 
     return (
@@ -205,52 +282,7 @@ const UnitList = () => {
                     </Button>
                 </CardHeader>
                 <CardContent>
-                <TblContainer component={Paper}>
-                        <Table aria-label="a dense table" size="small" >
-                            <TblHead />
-                            <TableBody>
-                                {recordsAfterPagingAndSort().map(row => (
-                                    <TableRow key={row.ID}>
-                                        <TableCell component="th" scope="row">
-                                            {row.ID}
-                                        </TableCell>
-                                        <TableCell align="left">{row.Name}</TableCell>
-
-                                        <TableCell align='center'>
-                                            <controls.ActionButton
-                                                color="primary"
-                                                onClick={() => {
-                                                    formik.values.id = row.ID
-                                                    formik.values.name = row.Name
-                                                    setPopupStates({
-                                                        title: "Edit Unit",
-                                                        openPopup: true,
-                                                        size: "sm"
-                                                    })
-                                                }}
-                                            >
-                                                <EditOutlinedIcon fontSize="small" />
-                                            </controls.ActionButton>
-                                            <controls.ActionButton
-                                                color="primary"
-                                            onClick={() => {
-                                            setConfirmDialog({
-                                                isOpen: true,
-                                                title: `Are you sure to delete ${row.Name} ?`,
-                                                subTitle: "You can't undo this operation",
-                                                onConfirm: () => { onDelete(row) }
-                                            })
-                                            }}
-                                            >
-                                                <DeleteIcon fontSize="small" />
-                                            </controls.ActionButton>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TblContainer>
-                    <TblPagination />
+                    {RrenderTable()}
                 </CardContent>
             </Card>
 
@@ -277,7 +309,7 @@ const UnitList = () => {
                                 Submit
                             </Button>
 
-{/* 
+                            {/* 
                             <controls.ActionButton
                                 color="secondary"
                                 onClick={() => { GetData2() }}

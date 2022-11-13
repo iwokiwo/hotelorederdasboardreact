@@ -14,3 +14,8 @@ export const confirmDialogState = atom({
     key: 'confirmDialogState',
     default: { isOpen: false, title: '', subTitle: '' }
 })
+
+export const reload = atom({
+    key: 'reload-state',
+    default: ''
+})

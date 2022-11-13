@@ -1,8 +1,8 @@
 import axios from 'axios.js'
 
-export async function PostData(url, dataPost) {
+export async function PutData(url, dataPut) {
 
-  const response = await axios.post(url, dataPost, {
+  const response = await axios.put(url, dataPut, {
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',

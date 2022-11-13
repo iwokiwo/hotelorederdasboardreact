@@ -2,7 +2,7 @@ import { Snackbar, Alert } from '@mui/material';
 import PropTypes from 'prop-types';
 import { withStyles } from '@mui/styles';
 import React from 'react'
-import { openMessage } from 'app/store/Controls';
+import { openMessage, reload } from 'app/store/Controls';
 import { useRecoilState } from 'recoil';
 
 const useStyles = theme => ({

@@ -79,6 +79,7 @@ const CategoryList = () => {
     const [confirmDialog, setConfirmDialog] = useRecoilState(confirmDialogState)
     const [popupStates, setPopupStates] = useRecoilState(popupState)
     const [reloadState, setReloadState] = useRecoilState(reload)
+    const [dataCategoryState, setDataCategoryState] = useRecoilState(dataCategory)
 
     const { palette } = useTheme()
 
@@ -99,8 +100,7 @@ const CategoryList = () => {
 
     const formik = useFormik({
         initialValues: {
-            name: "",
-            id: " ",
+            dataCategoryState
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {

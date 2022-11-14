@@ -1,28 +1,26 @@
+import { GetData } from 'app/services/getData'
 import axios from 'axios.js'
 
-import { selector } from 'recoil'
+import { atom, selector } from 'recoil'
+import { reload } from './Controls'
+import { urlCategory } from 'app/utils/constant'
+import { pagination } from './Pagination'
 
-const dataCategory = selector({
-    key: 'data-category',
+export const dataCategory = atom({
+    key: 'dataCategory',
+    default: { id: '', name: '' }
+})
 
-    get: async () => {
+export const getDataCategory = selector({
+    key: 'getDataCategory',
+
+    get: async ({get}) => {
         let category = null;
-       
+        get(reload)
         try {
-            let {data} = await axios.post('/api/v1/front/categories',{
-                Page:1,
-                Size:10,
-                Sort:"created_at desc",
-                Direction:"",
-                Active:1,
-                Stock :0
-            },{
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Accept':'application/json',
-                  'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
-                }})
-                category ={category: data}
+            await GetData(urlCategory, pagination).then((value) =>
+            category = { category: value }
+            )
         } catch (error) {
             category=  {category: error}
         }
@@ -30,5 +28,3 @@ const dataCategory = selector({
         return category
     }
 })
-
-export {dataCategory}

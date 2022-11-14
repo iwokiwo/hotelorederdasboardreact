@@ -20,7 +20,7 @@ export const navigations = [
                 path: '/category/category-list',
             },
             {
-                name: 'Unit/Satuan',
+                name: 'Unit',
                 iconText: 'FP',
                 path: '/unit/unit-list',
             },

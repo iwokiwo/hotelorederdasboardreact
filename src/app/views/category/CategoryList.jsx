@@ -23,7 +23,7 @@ import { now } from 'moment/moment'
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteIcon from '@mui/icons-material/DeleteOutline';
 
-import { dataCategory, getDataCategory } from 'app/store/Category'
+import { dataCategory, dataHeadCall, getDataCategory } from 'app/store/Category'
 import { confirmDialogState, openMessage, popupState, reload } from 'app/store/Controls'
 import { PutData } from 'app/services/putData'
 import { PostData } from 'app/services/postData'
@@ -71,31 +71,24 @@ const validationSchema = yup.object({
 
 const CategoryList = () => {
     const navigate = useNavigate()
-    const {category} = useRecoilValue(getDataCategory)
+    
     const [valuesSearch, setValuesSearch] = React.useState('');
+    //componen variable
     const [filterFn, setFilterFn] = React.useState({ fn: items => { return items; } });
-
+    //recoil 
+    const {category} = useRecoilValue(getDataCategory)
     const [notif, setNotif] = useRecoilState(openMessage)
     const [confirmDialog, setConfirmDialog] = useRecoilState(confirmDialogState)
     const [popupStates, setPopupStates] = useRecoilState(popupState)
-    const [reloadState, setReloadState] = useRecoilState(reload)
     const [dataCategoryState, setDataCategoryState] = useRecoilState(dataCategory)
-
-    const { palette } = useTheme()
-
-    const headCells = [
-
-        { id: 'ID', lable: 'SN', align: "left" },
-        { id: 'Name', lable: 'Name', align: "left" },
-        { id: 'action', lable: 'Action', disableSorting: true, align: "center" },
-    ]
+    const headCall = useRecoilValue(dataHeadCall)
 
     const {
         TblContainer,
         TblHead,
         TblPagination,
         recordsAfterPagingAndSort
-    } = useTable(category.data, headCells, filterFn);
+    } = useTable(category.data, headCall, filterFn);
 
 
     const formik = useFormik({
@@ -129,7 +122,7 @@ const CategoryList = () => {
                 openPopup: false
             })
 
-            setReloadState(now())
+            setDataCategoryState({...values})
 
           
         },
@@ -164,7 +157,7 @@ const CategoryList = () => {
             ...confirmDialog,
             isOpen: false
         })
-        setReloadState(now())
+        setDataCategoryState({...values})
 
     }
 

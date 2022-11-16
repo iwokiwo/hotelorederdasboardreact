@@ -23,7 +23,7 @@ import { now } from 'moment/moment'
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteIcon from '@mui/icons-material/DeleteOutline';
 
-import { dataCategory, dataHeadCall, getDataCategory } from 'app/store/Category'
+import { createDataCategory, dataCategory, dataHeadCall, getDataCategory, getDataCategorys } from 'app/store/Category'
 import { confirmDialogState, openMessage, popupState, reload } from 'app/store/Controls'
 import { PutData } from 'app/services/putData'
 import { PostData } from 'app/services/postData'
@@ -81,8 +81,12 @@ const CategoryList = () => {
     const [confirmDialog, setConfirmDialog] = useRecoilState(confirmDialogState)
     const [popupStates, setPopupStates] = useRecoilState(popupState)
     const [dataCategoryState, setDataCategoryState] = useRecoilState(dataCategory)
+    const [dataCategoryStates,setDataCategoryStates] = useRecoilState(getDataCategorys)
+    const [createDataCategoryState,setCreateDataCategoryState]= useRecoilState(createDataCategory)
     const headCall = useRecoilValue(dataHeadCall)
 
+    //  console.log("dataCategoryStates",dataCategoryStates)
+    //  console.log("category",category)
     const {
         TblContainer,
         TblHead,
@@ -105,6 +109,9 @@ const CategoryList = () => {
                         message: value.message,
                         type: value.staus
                     }))
+
+                    setDataCategoryState({...values})
+                // console.log("createDataCategoryState",createDataCategoryState)
                
             } else {
                 const data = PutData(urlUpdateCategory, values)
@@ -122,8 +129,7 @@ const CategoryList = () => {
                 openPopup: false
             })
 
-            setDataCategoryState({...values})
-
+           
           
         },
     });
@@ -157,8 +163,8 @@ const CategoryList = () => {
             ...confirmDialog,
             isOpen: false
         })
-        setDataCategoryState({...values})
 
+        setDataCategoryState({...values})
     }
 
     const RrenderTable = () => {
@@ -257,7 +263,6 @@ const CategoryList = () => {
             }
         })
     }, [valuesSearch, notif])
-
 
 
     return (

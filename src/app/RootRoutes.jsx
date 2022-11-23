@@ -6,6 +6,7 @@ import dashboardRoutes from './views/dashboard/DashboardRoutes'
 import itemRoutes from './views/item/ItemRoutes'
 import materialRoutes from './views/material-kit/MaterialRoutes'
 import UnitRoutes from './views/unit/UnitRoutes'
+import SettingRoutes from './views/setting/SettingRoutes'
 
 const redirectRoute = [
     {
@@ -26,6 +27,7 @@ const routes = [
     ...itemRoutes,
     ...CategoryRoutes,
     ...UnitRoutes,
+    ...SettingRoutes,
     ...materialRoutes,
     ...chartsRoute,
     ...redirectRoute,

@@ -6,209 +6,169 @@ import {
     RadioGroup,
     FormControlLabel,
     Checkbox,
+    TextField,
+    Box,
 } from '@mui/material'
 import { styled } from '@mui/system'
 import { Span } from 'app/components/Typography'
 import React, { useState, useEffect } from 'react'
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator'
-import AdapterDateFns from '@mui/lab/AdapterDateFns'
-import LocalizationProvider from '@mui/lab/LocalizationProvider'
-import { DatePicker } from '@mui/lab'
+import * as yup from 'yup';
+import { useFormik } from 'formik'
 
-const TextField = styled(TextValidator)(() => ({
-    width: '100%',
-    marginBottom: '16px',
-}))
+import { PostMultipartFormData } from 'app/services/postData'
+import controls from '../components'
+import { SimpleCard } from 'app/components'
+import { useRecoilState } from 'recoil'
+import { confirmDialogState, openMessage, popupState, reload } from 'app/store/Controls'
+import { urlCreateStore, urlUpdateStore } from 'app/utils/constant'
+import { PutMultipartFormData } from 'app/services/putData'
+import { now } from 'moment/moment'
+
+const validationSchema = yup.object({
+    name: yup
+        .string('Enter Name ')
+        .required('Name is required'),
+    address: yup
+        .string('Enter Address ')
+        .required('Address is required'),
+
+});
+
+const CustomBox = styled(Box)({
+    '&.MuiBox-root': {
+      backgroundColor: '#fff',
+      borderRadius: '1rem',
+      boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
+      padding: 5,
+    },
+    '&.MuiBox-root:hover, &.MuiBox-root.dragover': {
+      opacity: 0.6,
+    },
+  });
 
 const BussinesForm = () => {
-    const [state, setState] = useState({
-        date: new Date(),
-    })
+    const [selectedImage, setSelectedImage] = React.useState(null);
+    const [imageUrl, setImageUrl] = React.useState(null);
+
+    const [notif, setNotif] = useRecoilState(openMessage)
+    const [confirmDialog, setConfirmDialog] = useRecoilState(confirmDialogState)
+    const [popupStates, setPopupStates] = useRecoilState(popupState)
+    const [reloadState, setReloadState] = useRecoilState(reload)
+
+    const formik = useFormik({
+        initialValues: {
+            name: "",
+            address: "",
+            logo: null,
+            id: 0,
+        },
+        validationSchema: validationSchema,
+        onSubmit: (values) => {
+           
+            if (Number(values.id) === 0) {
+                //CreateData(values)
+                console.log("values",values)
+                PostMultipartFormData(urlCreateStore, values).then((value) =>
+                    setNotif({
+                        isOpen: true,
+                        message: value.message,
+                        type: value.status
+                    }))
+               
+            } else {
+                const data = PutMultipartFormData(urlUpdateStore, values)
+                data.then((value) =>
+                    setNotif({
+                        isOpen: true,
+                        message: value.message,
+                        type: value.status
+                    }))
+               
+            }
+
+            setPopupStates({
+                ...popupStates,
+                openPopup: false
+            })
+
+            setReloadState(now())
+        },
+    });
 
     useEffect(() => {
-        ValidatorForm.addValidationRule('isPasswordMatch', (value) => {
-            console.log(value)
+        if (selectedImage) {
+          setImageUrl(URL.createObjectURL(selectedImage));
+          formik.values.logo = selectedImage
+        }
+      }, [selectedImage]);
 
-            if (value !== state.password) {
-                return false
-            }
-            return true
-        })
-        return () => ValidatorForm.removeValidationRule('isPasswordMatch')
-    }, [state.password])
-
-    const handleSubmit = (event) => {
-        // console.log("submitted");
-         console.log(event);
-    }
-
-    const handleChange = (event) => {
-        event.persist()
-        setState({
-            ...state,
-            [event.target.name]: event.target.value,
-        })
-    }
-
-    const handleDateChange = (date) => {
-        setState({ ...state, date })
-    }
-
-    const {
-        username,
-        firstName,
-        creditCard,
-        mobile,
-        password,
-        confirmPassword,
-        gender,
-        date,
-        email,
-    } = state
 
     return (
         <div>
-            <ValidatorForm onSubmit={handleSubmit} onError={() => null}>
+            <form onSubmit={formik.handleSubmit}>
                 <Grid container spacing={6}>
                     <Grid item lg={6} md={6} sm={12} xs={12} sx={{ mt: 2 }}>
                         <TextField
-                            type="text"
-                            name="username"
-                            id="standard-basic"
-                            onChange={handleChange}
-                            value={username || ''}
-                            validators={[
-                                'required',
-                                'minStringLength: 4',
-                                'maxStringLength: 9',
-                            ]}
-                            label="Username (Min length 4, Max length 9)"
-                            errorMessages={['this field is required']}
+                            fullWidth
+                            id="name"
+                            name="name"
+                            label="Name"
+                            value={formik.values.name}
+                            onChange={formik.handleChange}
+                            error={formik.touched.name && Boolean(formik.errors.name)}
+                            helperText={formik.touched.name && formik.errors.name}
                         />
                         <TextField
-                            label="First Name"
-                            onChange={handleChange}
-                            type="text"
-                            name="firstName"
-                            value={firstName || ''}
-                            validators={['required']}
-                            errorMessages={['this field is required']}
-                        />
-                        <TextField
-                            label="Email"
-                            onChange={handleChange}
-                            type="email"
-                            name="email"
-                            value={email || ''}
-                            validators={['required', 'isEmail']}
-                            errorMessages={[
-                                'this field is required',
-                                'email is not valid',
-                            ]}
-                        />
-
-                        <LocalizationProvider dateAdapter={AdapterDateFns}>
-                            <DatePicker
-                                value={date}
-                                onChange={handleDateChange}
-                                renderInput={(props) => (
-                                    <TextField
-                                        {...props}
-                                        // variant="Outlined"
-                                        id="mui-pickers-date"
-                                        label="Date picker"
-                                        sx={{ mb: 2, width: '100%' }}
-                                    />
-                                )}
-                            />
-                        </LocalizationProvider>
-
-                        <TextField
-                            sx={{ mb: 4 }}
-                            label="Credit Card"
-                            onChange={handleChange}
-                            type="number"
-                            name="creditCard"
-                            value={creditCard || ''}
-                            validators={[
-                                'required',
-                                'minStringLength:16',
-                                'maxStringLength: 16',
-                            ]}
-                            errorMessages={['this field is required']}
+                            fullWidth
+                            multiline
+                            rows={4}
+                            id="address"
+                            name="address"
+                            label="Address"
+                            value={formik.values.address}
+                            onChange={formik.handleChange}
+                            error={formik.touched.address && Boolean(formik.errors.address)}
+                            helperText={formik.touched.address && formik.errors.address}
+                            sx={{mt: 2}}
                         />
                     </Grid>
 
-                    <Grid item lg={6} md={6} sm={12} xs={12} sx={{ mt: 2 }}>
-                        <TextField
-                            label="Mobile Nubmer"
-                            onChange={handleChange}
-                            type="text"
-                            name="mobile"
-                            value={mobile || ''}
-                            validators={['required']}
-                            errorMessages={['this field is required']}
+                    <Grid item lg={6} md={6} sm={12} xs={12} sx={{ mt: 2 }} textAlign="center">
+                        <CustomBox>
+                        <input
+                            accept="image/*"
+                            type="file"
+                            id="select-image"
+                            style={{ display: "none" }}
+                            onChange={(e) => setSelectedImage(e.target.files[0])}
                         />
-                        <TextField
-                            label="Password"
-                            onChange={handleChange}
-                            name="password"
-                            type="password"
-                            value={password || ''}
-                            validators={['required']}
-                            errorMessages={['this field is required']}
-                        />
-                        <TextField
-                            label="Confirm Password"
-                            onChange={handleChange}
-                            name="confirmPassword"
-                            type="password"
-                            value={confirmPassword || ''}
-                            validators={['required', 'isPasswordMatch']}
-                            errorMessages={[
-                                'this field is required',
-                                "password didn't match",
-                            ]}
-                        />
-                        <RadioGroup
-                            sx={{ mb: 2 }}
-                            value={gender || ''}
-                            name="gender"
-                            onChange={handleChange}
-                            row
-                        >
-                            <FormControlLabel
-                                value="Male"
-                                control={<Radio color="secondary" />}
-                                label="Male"
-                                labelPlacement="end"
-                            />
-                            <FormControlLabel
-                                value="Female"
-                                control={<Radio color="secondary" />}
-                                label="Female"
-                                labelPlacement="end"
-                            />
-                            <FormControlLabel
-                                value="Others"
-                                control={<Radio color="secondary" />}
-                                label="Others"
-                                labelPlacement="end"
-                            />
-                        </RadioGroup>
-                        <FormControlLabel
-                            control={<Checkbox />}
-                            label="I have read and agree to the terms of service."
-                        />
+                        <label htmlFor="select-image">
+                            <Button variant="contained" color="primary" component="span">
+                                Upload Logo
+                            </Button>
+                        </label>
+                        <Box mt={2} textAlign="center">
+                                <div>Image Preview:</div>
+                        {imageUrl && selectedImage && (
+                           
+                                <img src={imageUrl} alt={selectedImage.name} height="100px" />
+                           
+                        )}
+                      </Box>
+                     </CustomBox>
                     </Grid>
                 </Grid>
-                <Button color="primary" variant="contained" type="submit">
+                <Button color="primary" variant="contained" type="submit" sx={{mt: 1}}>
                     {/* <Icon>send</Icon> */}
                     <Span sx={{ pl: 1, textTransform: 'capitalize' }}>
                         Update
                     </Span>
                 </Button>
-            </ValidatorForm>
+            </form>
+
+            <controls.Notification />
+            <controls.ConfirmDialog />
         </div>
     )
 }

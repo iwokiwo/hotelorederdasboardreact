@@ -18,4 +18,5 @@ export let urlDeleteCategory='/api/v1/category/delete'
 
 //---------------------url Store-------------------------------
 export let urlCreateStore='/api/v1/store/create'
-export let urlUpdateStore='/api/v1/update/update'
+export let urlUpdateStore='/api/v1/store/update'
+export let urlStore='/api/v1/store/searchAll'

@@ -19,11 +19,13 @@ import { useFormik } from 'formik'
 import { PostMultipartFormData } from 'app/services/postData'
 import controls from '../components'
 import { SimpleCard } from 'app/components'
-import { useRecoilState } from 'recoil'
+import {useRecoilState, useRecoilValue} from 'recoil'
 import { confirmDialogState, openMessage, popupState, reload } from 'app/store/Controls'
 import { urlCreateStore, urlUpdateStore } from 'app/utils/constant'
 import { PutMultipartFormData } from 'app/services/putData'
 import { now } from 'moment/moment'
+import {setDataStoreFromik} from "../../store/Store";
+import {isNil} from "lodash";
 
 const validationSchema = yup.object({
     name: yup
@@ -51,22 +53,25 @@ const BussinesForm = () => {
     const [selectedImage, setSelectedImage] = React.useState(null);
     const [imageUrl, setImageUrl] = React.useState(null);
 
-    const [notif, setNotif] = useRecoilState(openMessage)
     const [confirmDialog, setConfirmDialog] = useRecoilState(confirmDialogState)
     const [popupStates, setPopupStates] = useRecoilState(popupState)
     const [reloadState, setReloadState] = useRecoilState(reload)
+    const [notif, setNotif] = useRecoilState(openMessage)
+
+    const setData = useRecoilValue(setDataStoreFromik)
+
+    // console.log("setData",setData)
 
     const formik = useFormik({
         initialValues: {
-            name: "",
-            address: "",
-            logo: null,
-            id: 0,
+            ...setData,
+            logoOld: setData.logo,
+            id: setData.id
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
-           
-            if (Number(values.id) === 0) {
+           console.log(isNil(values.id))
+            if (isNil(values.id)) {
                 //CreateData(values)
                 console.log("values",values)
                 PostMultipartFormData(urlCreateStore, values).then((value) =>
@@ -103,6 +108,10 @@ const BussinesForm = () => {
         }
       }, [selectedImage]);
 
+    useEffect(() => {
+
+        console.log("imageUrl",imageUrl)
+    },[])
 
     return (
         <div>
@@ -148,13 +157,13 @@ const BussinesForm = () => {
                                 Upload Logo
                             </Button>
                         </label>
-                        <Box mt={2} textAlign="center">
-                                <div>Image Preview:</div>
-                        {imageUrl && selectedImage && (
-                           
-                                <img src={imageUrl} alt={selectedImage.name} height="100px" />
-                           
-                        )}
+                        <Box mt={3} textAlign="center">
+
+                        {imageUrl && selectedImage  ?(
+                            <img src={imageUrl} alt={selectedImage.name} height="100px" />
+                        ):
+                            (<img src={`${formik.values.url}${formik.values.path}${formik.values.logo}`} height="100px" />)
+                        }
                       </Box>
                      </CustomBox>
                     </Grid>

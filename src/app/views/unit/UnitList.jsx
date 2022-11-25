@@ -113,7 +113,7 @@ const UnitList = () => {
                     setNotif({
                         isOpen: true,
                         message: value.message,
-                        type: value.staus
+                        type: value.status
                     }))
                
             } else {
@@ -122,7 +122,7 @@ const UnitList = () => {
                     setNotif({
                         isOpen: true,
                         message: value.message,
-                        type: value.staus
+                        type: value.status
                     }))
                
             }
@@ -173,7 +173,7 @@ const UnitList = () => {
             setNotif({
                 isOpen: true,
                 message: value.message,
-                type: value.staus
+                type: value.status
             }))
     
         setConfirmDialog({

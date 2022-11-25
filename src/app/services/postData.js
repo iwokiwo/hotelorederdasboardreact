@@ -30,7 +30,7 @@ export async function PostMultipartFormData(url, dataPost) {
     },
   })
   const data = await response.data;
-  console.log("data",data)
+
   return data;
 
 }

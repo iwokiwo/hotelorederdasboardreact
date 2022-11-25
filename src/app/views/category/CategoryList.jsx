@@ -107,7 +107,7 @@ const CategoryList = () => {
                     setNotif({
                         isOpen: true,
                         message: value.message,
-                        type: value.staus
+                        type: value.status
                     }))
 
                     setDataCategoryState({...values})
@@ -119,7 +119,7 @@ const CategoryList = () => {
                     setNotif({
                         isOpen: true,
                         message: value.message,
-                        type: value.staus
+                        type: value.status
                     }))
                
             }
@@ -156,7 +156,7 @@ const CategoryList = () => {
             setNotif({
                 isOpen: true,
                 message: value.message,
-                type: value.staus
+                type: value.status
             }))
     
         setConfirmDialog({

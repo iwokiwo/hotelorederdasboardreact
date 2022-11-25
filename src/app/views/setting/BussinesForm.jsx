@@ -7,7 +7,7 @@ import {
     FormControlLabel,
     Checkbox,
     TextField,
-    Box,
+    Box, Paper,
 } from '@mui/material'
 import { styled } from '@mui/system'
 import { Span } from 'app/components/Typography'
@@ -108,11 +108,6 @@ const BussinesForm = () => {
         }
       }, [selectedImage]);
 
-    useEffect(() => {
-
-        console.log("imageUrl",imageUrl)
-    },[])
-
     return (
         <div>
             <form onSubmit={formik.handleSubmit}>
@@ -144,33 +139,41 @@ const BussinesForm = () => {
                     </Grid>
 
                     <Grid item lg={6} md={6} sm={12} xs={12} sx={{ mt: 2 }} textAlign="center">
-                        <CustomBox>
-                        <input
-                            accept="image/*"
-                            type="file"
-                            id="select-image"
-                            style={{ display: "none" }}
-                            onChange={(e) => setSelectedImage(e.target.files[0])}
-                        />
-                        <label htmlFor="select-image">
-                            <Button variant="contained" color="primary" component="span">
-                                Upload Logo
-                            </Button>
-                        </label>
-                        <Box mt={3} textAlign="center">
+                        <Paper variant="outlined"
+                               sx={{
+                                   borderRadius: 2,
+                                   border: 1,
+                                   p: 1,
+                                   borderColor: 'lightblue',
+                               }}>
+                            <Box sx={{mt: 1, mb: 2}} textAlign="center">
 
-                        {imageUrl && selectedImage  ?(
-                            <img src={imageUrl} alt={selectedImage.name} height="100px" />
-                        ):
-                            (<img src={`${formik.values.url}${formik.values.path}${formik.values.logo}`} height="100px" />)
-                        }
-                      </Box>
-                     </CustomBox>
+                                {imageUrl && selectedImage  ?(
+                                        <img src={imageUrl} alt={selectedImage.name} height="100px" />
+                                    ):
+                                    (<img src={`${formik.values.url}${formik.values.path}${formik.values.logo}`} height="100px" />)
+                                }
+                            </Box>
+                            <input
+                                accept="image/*"
+                                type="file"
+                                id="select-image"
+                                style={{ display: "none" }}
+                                onChange={(e) => setSelectedImage(e.target.files[0])}
+                            />
+                            <label htmlFor="select-image">
+                                <Button variant="contained" color="primary" component="span">
+                                    Upload Logo
+                                </Button>
+                            </label>
+
+                        </Paper>
+
                     </Grid>
                 </Grid>
-                <Button color="primary" variant="contained" type="submit" sx={{mt: 1}}>
+                <Button color="primary" variant="contained" type="submit" sx={{mt: 3}}>
                     {/* <Icon>send</Icon> */}
-                    <Span sx={{ pl: 1, textTransform: 'capitalize' }}>
+                    <Span sx={{ textTransform: 'capitalize' }}>
                         Update
                     </Span>
                 </Button>
@@ -178,6 +181,7 @@ const BussinesForm = () => {
 
             <controls.Notification />
             <controls.ConfirmDialog />
+
         </div>
     )
 }

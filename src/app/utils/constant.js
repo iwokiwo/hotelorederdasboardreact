@@ -20,3 +20,8 @@ export let urlDeleteCategory='/api/v1/category/delete'
 export let urlCreateStore='/api/v1/store/create'
 export let urlUpdateStore='/api/v1/store/update'
 export let urlStore='/api/v1/store/searchAll'
+
+//---------------------url Branch-------------------------------
+export let urlCreateBranch='/api/v1/branch/create'
+export let urlUpdateBranch='/api/v1/branch/update'
+export let urlBranch='/api/v1/branch/searchAll'

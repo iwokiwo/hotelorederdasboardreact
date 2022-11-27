@@ -1,24 +1,17 @@
 import {
     Button,
-    Icon,
     Grid,
-    Radio,
-    RadioGroup,
-    FormControlLabel,
-    Checkbox,
     TextField,
     Box, Paper,
 } from '@mui/material'
 import { styled } from '@mui/system'
 import { Span } from 'app/components/Typography'
-import React, { useState, useEffect } from 'react'
-import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator'
+import React, { useEffect } from 'react'
 import * as yup from 'yup';
 import { useFormik } from 'formik'
 
 import { PostMultipartFormData } from 'app/services/postData'
 import controls from '../components'
-import { SimpleCard } from 'app/components'
 import {useRecoilState, useRecoilValue} from 'recoil'
 import { confirmDialogState, openMessage, popupState, reload } from 'app/store/Controls'
 import { urlCreateStore, urlUpdateStore } from 'app/utils/constant'
@@ -37,17 +30,17 @@ const validationSchema = yup.object({
 
 });
 
-const CustomBox = styled(Box)({
-    '&.MuiBox-root': {
-      backgroundColor: '#fff',
-      borderRadius: '1rem',
-      boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
-      padding: 5,
-    },
-    '&.MuiBox-root:hover, &.MuiBox-root.dragover': {
-      opacity: 0.6,
-    },
-  });
+// const CustomBox = styled(Box)({
+//     '&.MuiBox-root': {
+//       backgroundColor: '#fff',
+//       borderRadius: '1rem',
+//       boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
+//       padding: 5,
+//     },
+//     '&.MuiBox-root:hover, &.MuiBox-root.dragover': {
+//       opacity: 0.6,
+//     },
+//   });
 
 const BussinesForm = () => {
     const [selectedImage, setSelectedImage] = React.useState(null);

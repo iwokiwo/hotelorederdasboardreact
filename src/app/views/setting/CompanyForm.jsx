@@ -6,6 +6,7 @@ import {useRecoilState, useRecoilValue} from "recoil";
 import {dataStore, getDataStore, setDataStore} from "app/store/Store";
 import {reload} from "../../store/Controls";
 import {isEmpty} from "lodash";
+import BranchList from "./BranchList";
 
 const Container = styled('div')(({ theme }) => ({
     margin: '30px',
@@ -50,7 +51,7 @@ const CompanyForm = () => {
             </SimpleCard>
             <Box py="12px" />
             <SimpleCard title="Branch Setup">
-                {/* <StepperForm /> */}
+               <BranchList />
             </SimpleCard>
         </Container>
     )

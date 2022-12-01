@@ -1,9 +1,21 @@
 import {atom, selector} from "recoil";
 import {reload} from "./Controls";
 import {GetData} from "../services/getData";
-import {urlBranch} from "../utils/constant";
+import {urlBranch, urlStore} from "../utils/constant";
 import {pagination} from "./Pagination";
 
+export const dataHeadCallBranch = atom({
+    key: 'dataHeadCallBranch',
+    default:  [
+        { id: 'ID', lable: 'SN', align: "left" },
+        { id: 'Name', lable: 'Name', align: "left" },
+        { id: 'Phone', lable: 'Phone', align: "left" },
+        { id: 'Email', lable: 'Email', align: "left" },
+        { id: 'Address', lable: 'Address', align: "left" },
+        { id: 'Logo', lable: 'Logo', align: "left" },
+        { id: 'action', lable: 'Action', disableSorting: true, align: "center" },
+    ]
+})
 
 export const dataBranch = atom({
     key: 'dataBranch',
@@ -29,22 +41,23 @@ export const setDataBranchFromik = selector({
 })
 
 export const getDataBranch = selector({
-    key: 'getDataBranch',
+    key: 'getDataBranchState',
 
     get: async ({get}) => {
 
-        let data = null;
+        let branch = [];
 
         get(reload)
         try {
             await GetData(urlBranch, pagination).then((value) =>
-                data = { data: value }
+                branch = { branch: value }
             )
-            console.log("data from API",data)
         } catch (error) {
-            data=  {data: []}
+            branch=  {branch: []}
         }
 
-        return data
+        return branch
     }
 })
+
+

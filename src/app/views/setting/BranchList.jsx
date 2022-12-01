@@ -18,23 +18,20 @@ import { Box, styled, useTheme } from '@mui/system'
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteIcon from '@mui/icons-material/DeleteOutline';
 
-import { Breadcrumb, SimpleCard } from 'app/components'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import * as yup from 'yup';
 import { useFormik } from 'formik'
 
-import { createDataUnit, dataUnit, getDataUnit } from 'app/store/Unit'
 import { confirmDialogState, openMessage, popupState, reload } from 'app/store/Controls'
 import controls from '../components'
-import { pagination } from 'app/store/Pagination'
-import { PostData } from 'app/services/postData'
+import {PostData, PostMultipartFormData} from 'app/services/postData'
 import {isEmpty, isNil} from 'lodash'
 import useTable from '../components/useTable'
-import { urlCreateUnit, urlDeleteUnit, urlUpdateUnit } from 'app/utils/constant'
-import { PutData } from 'app/services/putData'
+import {urlCreateBranch, urlDeleteUnit, urlUpdateBranch} from 'app/utils/constant'
+import {PutMultipartFormData} from 'app/services/putData'
 import { now } from 'moment/moment'
-import {getDataBranch, setDataBranchFromik} from "../../store/Branch";
-import {setDataStoreFromik} from "../../store/Store";
+import {dataBranch, dataHeadCallBranch, getDataBranch, setDataBranchFromik} from "app/store/Branchs";
+
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -75,37 +72,29 @@ const validationSchema = yup.object({
 
 
 const BranchList = () => {
-    const classes = useStyles()
     const [selectedImage, setSelectedImage] = React.useState(null);
     const [imageUrl, setImageUrl] = React.useState(null);
 
-    const { dataState } = useRecoilValue(getDataBranch)
+    const {branch} = useRecoilValue(getDataBranch)
     const [valuesSearch, setValuesSearch] = React.useState('');
     const [filterFn, setFilterFn] = React.useState({ fn: items => { return items; } });
-    const [createState, setCreateState] = useRecoilState(dataUnit)
     const setData = useRecoilValue(setDataBranchFromik)
+    const [dataBranchState, setDataBranchState] = useRecoilState(dataBranch)
+    const headCall = useRecoilValue(dataHeadCallBranch)
 
     const [notif, setNotif] = useRecoilState(openMessage)
     const [confirmDialog, setConfirmDialog] = useRecoilState(confirmDialogState)
     const [popupStates, setPopupStates] = useRecoilState(popupState)
     const [reloadState, setReloadState] = useRecoilState(reload)
 
-    const [paginationState, setPaginationState] = useRecoilState(pagination)
-
-    const headCells = [
-
-        { id: 'ID', lable: 'SN', align: "left" },
-        { id: 'Name', lable: 'Name', align: "left" },
-        { id: 'action', lable: 'Action', disableSorting: true, align: "center" },
-    ]
-
+    console.log("branch",branch)
 
     const {
         TblContainer,
         TblHead,
         TblPagination,
         recordsAfterPagingAndSort
-    } = useTable(isNil(dataState) ? []: dataState.data, headCells, filterFn);
+    } = useTable(isNil(branch) ? []: branch.data, headCall, filterFn);
 
     const formik = useFormik({
         initialValues: {
@@ -117,7 +106,7 @@ const BranchList = () => {
         onSubmit: (values) => {
             if (Number(values.id) === 0) {
                 //CreateData(values)
-                PostData(urlCreateUnit, values).then((value) =>
+                PostMultipartFormData(urlCreateBranch, values).then((value) =>
                     setNotif({
                         isOpen: true,
                         message: value.message,
@@ -125,7 +114,7 @@ const BranchList = () => {
                     }))
 
             } else {
-                const data = PutData(urlUpdateUnit, values)
+                const data = PutMultipartFormData(urlUpdateBranch, values)
                 data.then((value) =>
                     setNotif({
                         isOpen: true,
@@ -146,7 +135,6 @@ const BranchList = () => {
         },
     });
 
-
     const handleClickOpen = () => {
         formik.values.id = 0
         formik.values.name = ""
@@ -157,7 +145,6 @@ const BranchList = () => {
         })
 
     }
-
 
     const handleChange = (e) => {
         let target = e.target;
@@ -190,18 +177,24 @@ const BranchList = () => {
                         <TblHead />
                         <TableBody>
                             {recordsAfterPagingAndSort().map(row => (
-                                <TableRow key={row.ID}>
+                                <TableRow key={row.id}>
                                     <TableCell component="th" scope="row">
-                                        {row.ID}
+                                        {row.id}
                                     </TableCell>
-                                    <TableCell align="left">{row.Name}</TableCell>
-
+                                    <TableCell align="left">{row.name}</TableCell>
+                                    <TableCell align="left">{row.phone}</TableCell>
+                                    <TableCell align="left">{row.email}</TableCell>
+                                    <TableCell align="left">{row.address}</TableCell>
+                                    <TableCell align="left"> <img src={`${row.url}${row.path}${row.logo}`} height="50px" /></TableCell>
                                     <TableCell align='center'>
                                         <controls.ActionButton
                                             color="primary"
                                             onClick={() => {
-                                                formik.values.id = row.ID
-                                                formik.values.name = row.Name
+                                                formik.values.id = row.id
+                                                formik.values.name = row.name
+                                                formik.values.phone = row.phone
+                                                formik.values.email = row.email
+                                                formik.values.address = row.address
                                                 setPopupStates({
                                                     title: "Edit Branch",
                                                     openPopup: true,
@@ -311,7 +304,7 @@ const BranchList = () => {
                                     style={{ display: "none" }}
                                     onChange={(e) => setSelectedImage(e.target.files[0])}
                                 />
-                                <label htmlFor="select-image">
+                                <label htmlFor="select-image-branch">
                                     <Button variant="contained" color="primary" component="span">
                                         Upload Logo
                                     </Button>
@@ -336,10 +329,10 @@ const BranchList = () => {
         setFilterFn({
             fn: items => {
                 if (isEmpty(valuesSearch.valuesSearch)) {
-                    return items = isNil(dataState) ? []:dataState.data
+                    return items = isNil(branch) ? []:branch.data
                 }
                 else {
-                    return items = isNil(dataState) ? []:dataState.data.filter(x => x.Name.toUpperCase().includes(valuesSearch.valuesSearch.toUpperCase()));
+                    return items = isNil(branch) ? []:branch.data.filter(x => x.name.toUpperCase().includes(valuesSearch.valuesSearch.toUpperCase()));
                 }
             }
         })
@@ -380,7 +373,7 @@ const BranchList = () => {
                 </CardContent>
             </Card>
 
-            <RenderForm />
+            {RenderForm()}
             <controls.Notification />
             <controls.ConfirmDialog />
 

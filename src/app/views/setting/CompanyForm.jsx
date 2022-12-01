@@ -4,9 +4,11 @@ import { Box, styled } from '@mui/system'
 import BussinesForm from './BussinesForm'
 import {useRecoilState, useRecoilValue} from "recoil";
 import {dataStore, getDataStore, setDataStore} from "app/store/Store";
+import { getDataBranch} from "app/store/Branchs";
 import {reload} from "../../store/Controls";
 import {isEmpty} from "lodash";
 import BranchList from "./BranchList";
+
 
 const Container = styled('div')(({ theme }) => ({
     margin: '30px',
@@ -23,6 +25,7 @@ const Container = styled('div')(({ theme }) => ({
 
 const CompanyForm = () => {
     const { data } = useRecoilValue(getDataStore)
+
 
     const [dataStoreState, setDataStoreState] = useRecoilState(dataStore)
 
@@ -51,7 +54,7 @@ const CompanyForm = () => {
             </SimpleCard>
             <Box py="12px" />
             <SimpleCard title="Branch Setup">
-               <BranchList />
+                {<BranchList />}
             </SimpleCard>
         </Container>
     )

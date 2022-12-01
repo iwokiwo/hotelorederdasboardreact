@@ -1,7 +1,7 @@
 import {atom, selector, selectorFamily} from "recoil";
 import {openMessage, reload} from "./Controls";
 import {GetData} from "../services/getData";
-import {urlStore} from "../utils/constant";
+import {urlBranch, urlStore} from "../utils/constant";
 import {pagination} from "./Pagination";
 
 
@@ -41,6 +41,9 @@ export const getDataStore = selector({
         } catch (error) {
             data=  {data: []}
         }
+        console.log("getDataStore",data)
         return data
     }
 })
+
+

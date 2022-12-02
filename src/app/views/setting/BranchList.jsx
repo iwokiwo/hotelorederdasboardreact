@@ -195,6 +195,9 @@ const BranchList = () => {
                                                 formik.values.phone = row.phone
                                                 formik.values.email = row.email
                                                 formik.values.address = row.address
+                                                formik.values.url = row.url
+                                                formik.values.path = row.path
+                                                formik.values.logo = row.logo
                                                 setPopupStates({
                                                     title: "Edit Branch",
                                                     openPopup: true,

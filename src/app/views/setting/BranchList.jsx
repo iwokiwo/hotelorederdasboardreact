@@ -114,6 +114,7 @@ const BranchList = () => {
                     }))
 
             } else {
+                console.log("edit",values)
                 const data = PutMultipartFormData(urlUpdateBranch, values)
                 data.then((value) =>
                     setNotif({
@@ -198,6 +199,7 @@ const BranchList = () => {
                                                 formik.values.url = row.url
                                                 formik.values.path = row.path
                                                 formik.values.logo = row.logo
+                                                formik.values.logoOld = row.logo
                                                 setPopupStates({
                                                     title: "Edit Branch",
                                                     openPopup: true,

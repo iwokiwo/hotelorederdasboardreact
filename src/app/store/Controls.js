@@ -12,7 +12,7 @@ export const popupState = atom({
 
 export const confirmDialogState = atom({
     key: 'confirmDialogState',
-    default: { isOpen: false, title: '', subTitle: '' }
+    default: { isOpen: false, title: '', subTitle: '', buttonNo: true }
 })
 
 export const reload = atom({

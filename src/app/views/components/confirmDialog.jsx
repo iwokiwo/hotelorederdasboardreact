@@ -58,11 +58,11 @@ function ConfirmDialog(props) {
                 </Typography>
             </DialogContent>
             <DialogActions className={classes.dialogAction}>
+                    <controls.Button
+                        text="No"
+                        // color="default"
+                        onClick={()=>setPopupData({ ...popupData, isOpen:false})}/>
                 <controls.Button
-                text="No"
-               // color="default"
-                onClick={()=>setPopupData({ ...popupData, isOpen:false})}/>
-                 <controls.Button
                 text="Yes"
                 color="secondary"
                 onClick={popupData.onConfirm}/>

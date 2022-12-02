@@ -137,8 +137,24 @@ const BranchList = () => {
     });
 
     const handleClickOpen = () => {
+        if(branch.data.length > 1){
+            setNotif({
+                isOpen: true,
+                message: "Branch have limit",
+                type: "error"
+            })
+            return
+        }
+
         formik.values.id = 0
         formik.values.name = ""
+        formik.values.phone = ""
+        formik.values.email = ""
+        formik.values.address = ""
+        formik.values.url = ""
+        formik.values.path = ""
+        formik.values.logo = null
+        formik.values.logoOld = null
         setPopupStates({
             title: "Add Branch",
             openPopup: true,
@@ -188,40 +204,44 @@ const BranchList = () => {
                                     <TableCell align="left">{row.address}</TableCell>
                                     <TableCell align="left"> <img src={`${row.url}${row.path}${row.logo}`} height="50px" /></TableCell>
                                     <TableCell align='center'>
-                                        <controls.ActionButton
-                                            color="primary"
-                                            onClick={() => {
-                                                formik.values.id = row.id
-                                                formik.values.name = row.name
-                                                formik.values.phone = row.phone
-                                                formik.values.email = row.email
-                                                formik.values.address = row.address
-                                                formik.values.url = row.url
-                                                formik.values.path = row.path
-                                                formik.values.logo = row.logo
-                                                formik.values.logoOld = row.logo
-                                                setPopupStates({
-                                                    title: "Edit Branch",
-                                                    openPopup: true,
-                                                    size: "sm"
-                                                })
-                                            }}
-                                        >
-                                            <EditOutlinedIcon fontSize="small" />
-                                        </controls.ActionButton>
-                                        <controls.ActionButton
-                                            color="primary"
-                                            onClick={() => {
-                                                setConfirmDialog({
-                                                    isOpen: true,
-                                                    title: `Are you sure to delete ${row.Name} ?`,
-                                                    subTitle: "You can't undo this operation",
-                                                    onConfirm: () => { onDelete(row) }
-                                                })
-                                            }}
-                                        >
-                                            <DeleteIcon fontSize="small" />
-                                        </controls.ActionButton>
+
+                                            <controls.ActionButton
+                                                color="primary"
+                                                onClick={() => {
+                                                    formik.values.id = row.id
+                                                    formik.values.name = row.name
+                                                    formik.values.phone = row.phone
+                                                    formik.values.email = row.email
+                                                    formik.values.address = row.address
+                                                    formik.values.url = row.url
+                                                    formik.values.path = row.path
+                                                    formik.values.logo = row.logo
+                                                    formik.values.logoOld = row.logo
+                                                    setPopupStates({
+                                                        title: "Edit Branch",
+                                                        openPopup: true,
+                                                        size: "sm"
+                                                    })
+                                                }}
+                                            >
+                                                <EditOutlinedIcon fontSize="small" />
+                                            </controls.ActionButton>
+
+
+
+                                        {/*<controls.ActionButton*/}
+                                        {/*    color="primary"*/}
+                                        {/*    onClick={() => {*/}
+                                        {/*        setConfirmDialog({*/}
+                                        {/*            isOpen: true,*/}
+                                        {/*            title: `Are you sure to delete ${row.Name} ?`,*/}
+                                        {/*            subTitle: "You can't undo this operation",*/}
+                                        {/*            onConfirm: () => { onDelete(row) }*/}
+                                        {/*        })*/}
+                                        {/*    }}*/}
+                                        {/*>*/}
+                                        {/*    <DeleteIcon fontSize="small" />*/}
+                                        {/*</controls.ActionButton>*/}
                                     </TableCell>
                                 </TableRow>
                             ))}

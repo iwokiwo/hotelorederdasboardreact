@@ -10,7 +10,7 @@ import {
     Grid,
     Paper,
     InputAdornment,
-    CardContent,
+    CardContent, Divider,
 } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { Paragraph, Span } from 'app/components/Typography'
@@ -339,12 +339,16 @@ const BranchList = () => {
 
                         </Grid>
                     </Grid>
-                    <Button color="primary" variant="contained" type="submit" sx={{mt: 3}}>
-                        {/* <Icon>send</Icon> */}
-                        <Span sx={{ textTransform: 'capitalize' }}>
-                            Submit
-                        </Span>
-                    </Button>
+
+                    <Box textAlign={"right"}>
+                        <Button color="primary" variant="text" type="submit" sx={{mt: 5}}>
+                            {/* <Icon>send</Icon> */}
+                            <Span sx={{ textTransform: 'capitalize' }}>
+                                Submit
+                            </Span>
+                        </Button>
+                    </Box>
+
                 </form>
             </controls.popup>
         )

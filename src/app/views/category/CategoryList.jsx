@@ -71,11 +71,11 @@ const validationSchema = yup.object({
 
 const CategoryList = () => {
     const navigate = useNavigate()
-    
+
     const [valuesSearch, setValuesSearch] = React.useState('');
     //componen variable
     const [filterFn, setFilterFn] = React.useState({ fn: items => { return items; } });
-    //recoil 
+    //recoil
     const {category} = useRecoilValue(getDataCategory)
     const [notif, setNotif] = useRecoilState(openMessage)
     const [confirmDialog, setConfirmDialog] = useRecoilState(confirmDialogState)
@@ -112,7 +112,7 @@ const CategoryList = () => {
 
                     setDataCategoryState({...values})
                 // console.log("createDataCategoryState",createDataCategoryState)
-               
+
             } else {
                 const data = PutData(urlUpdateCategory, values)
                 data.then((value) =>
@@ -121,7 +121,7 @@ const CategoryList = () => {
                         message: value.message,
                         type: value.status
                     }))
-               
+
             }
 
             setPopupStates({
@@ -129,8 +129,8 @@ const CategoryList = () => {
                 openPopup: false
             })
 
-           
-          
+
+
         },
     });
 
@@ -142,7 +142,7 @@ const CategoryList = () => {
             openPopup: true,
             size: "sm"
         })
-       
+
     }
 
     const handleChange = (e) => {
@@ -158,7 +158,7 @@ const CategoryList = () => {
                 message: value.message,
                 type: value.status
             }))
-    
+
         setConfirmDialog({
             ...confirmDialog,
             isOpen: false
@@ -240,9 +240,14 @@ const CategoryList = () => {
                                 helperText={formik.touched.name && formik.errors.name}
                             />
 
-                            <Button color="primary" variant="contained" type="submit" sx={{ mt: 2 }}>
-                                Submit
-                            </Button>
+                            <Box textAlign={"right"}>
+                                <Button color="primary" variant="text" type="submit" sx={{mt: 5}}>
+                                    {/* <Icon>send</Icon> */}
+                                    <Span sx={{ textTransform: 'capitalize' }}>
+                                        Submit
+                                    </Span>
+                                </Button>
+                            </Box>
                         </Grid>
                     </Grid>
                 </form>
@@ -250,7 +255,7 @@ const CategoryList = () => {
             </>
         )
     }
- 
+
     useEffect(() => {
         setFilterFn({
             fn: items => {
@@ -299,7 +304,7 @@ const CategoryList = () => {
         <controls.Notification />
         <controls.ConfirmDialog />
         {RenderForm()}
-       
+
         </Container>
     )
 }

@@ -79,7 +79,7 @@ const UnitList = () => {
     const [valuesSearch, setValuesSearch] = React.useState('');
     const [filterFn, setFilterFn] = React.useState({ fn: items => { return items; } });
     const [createState, setCreateState] = useRecoilState(dataUnit)
-    
+
     const [notif, setNotif] = useRecoilState(openMessage)
     const [confirmDialog, setConfirmDialog] = useRecoilState(confirmDialogState)
     const [popupStates, setPopupStates] = useRecoilState(popupState)
@@ -116,7 +116,7 @@ const UnitList = () => {
                         message: value.message,
                         type: value.status
                     }))
-               
+
             } else {
                 const data = PutData(urlUpdateUnit, values)
                 data.then((value) =>
@@ -125,7 +125,7 @@ const UnitList = () => {
                         message: value.message,
                         type: value.status
                     }))
-               
+
             }
 
             setPopupStates({
@@ -135,7 +135,7 @@ const UnitList = () => {
 
             setReloadState(now())
 
-          
+
         },
     });
 
@@ -153,7 +153,7 @@ const UnitList = () => {
             openPopup: true,
             size: "sm"
         })
-       
+
     }
 
     const GetData2 = () => {
@@ -176,7 +176,7 @@ const UnitList = () => {
                 message: value.message,
                 type: value.status
             }))
-    
+
         setConfirmDialog({
             ...confirmDialog,
             isOpen: false
@@ -307,11 +307,16 @@ const UnitList = () => {
                                 helperText={formik.touched.name && formik.errors.name}
                             />
 
-                            <Button color="primary" variant="contained" type="submit" sx={{ mt: 2 }}>
-                                Submit
-                            </Button>
+                            <Box textAlign={"right"}>
+                                <Button color="primary" variant="text" type="submit" sx={{mt: 5}}>
+                                    {/* <Icon>send</Icon> */}
+                                    <Span sx={{ textTransform: 'capitalize' }}>
+                                        Submit
+                                    </Span>
+                                </Button>
+                            </Box>
 
-                            {/* 
+                            {/*
                             <controls.ActionButton
                                 color="secondary"
                                 onClick={() => { GetData2() }}

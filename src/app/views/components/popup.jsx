@@ -1,8 +1,8 @@
 import React from 'react'
-import { Dialog, DialogContent, DialogTitle, Divider, Typography } from '@mui/material'
+import {Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Typography} from '@mui/material'
 import PropTypes from 'prop-types';
 import { withStyles } from '@mui/styles';
-import controls from './index'; 
+import controls from './index';
 import CloseIcon from '@mui/icons-material/Close'
 import { popupState } from 'app/store/Controls';
 import { useRecoilState } from 'recoil';
@@ -15,7 +15,7 @@ const useStyles = theme => ({
     },
     dialogTitle:{
         paddingRight:'0px',
-      
+
     }
   })
 
@@ -28,7 +28,7 @@ function Popup(props) {
        <Dialog open={popupData.openPopup} maxWidth={popupData.size} fullWidth classes={{paper:classes.dialogWrapper}}>
           <DialogTitle className={classes.dialogTitle} >
               <div style={{display:'flex'}}>
-                  <Typography variant="h5" component="div" style={{flexGrow:1, paddingTop:12}}
+                  <Typography variant="h6" component="div" style={{flexGrow:1, mt: -1}}
                   >{popupData.title}</Typography>
                     <controls.ActionButton
                     color="secondary"
@@ -37,14 +37,23 @@ function Popup(props) {
                         openPopup:false
                     })}}
                     >
-                    <CloseIcon />
+                    <CloseIcon fontSize={"small"} sx={{mt: -1}} />
                     </controls.ActionButton>
               </div>
-          </DialogTitle> 
+          </DialogTitle>
           <Divider></Divider>
           <DialogContent style={{flexGrow:1, paddingTop:1}}>
                {children}
           </DialogContent>
+           {/*<DialogActions>*/}
+           {/*    <controls.ActionButton  onClick={()=>{setPopupData({*/}
+           {/*        ...popupData,*/}
+           {/*        openPopup:false*/}
+           {/*    })}}>Close</controls.ActionButton>*/}
+           {/*    <Button type={"submit"}>*/}
+           {/*        Save*/}
+           {/*    </Button>*/}
+           {/*</DialogActions>*/}
        </Dialog>
        </div>
     )

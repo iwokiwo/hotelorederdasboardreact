@@ -16,9 +16,13 @@ import { useNavigate } from 'react-router-dom'
 
 import { Box, styled, useTheme } from '@mui/system'
 import { Breadcrumb, SimpleCard } from 'app/components'
-import { useRecoilValue } from 'recoil'
+import {useRecoilState, useRecoilValue} from 'recoil'
 import { Paragraph, Span } from 'app/components/Typography'
 import { dataItem } from 'app/store/listItem'
+import ItemForm from "./ItemForm";
+
+import { confirmDialogState, openMessage, popupState, reload } from 'app/store/Controls'
+import controls from '../components'
 
 const CardHeader = styled('div')(() => ({
     paddingLeft: '24px',
@@ -85,6 +89,21 @@ const ItemList = () => {
     const bgPrimary = palette.primary.main
     const bgSecondary = palette.secondary.main
 
+    const [notif, setNotif] = useRecoilState(openMessage)
+    const [confirmDialog, setConfirmDialog] = useRecoilState(confirmDialogState)
+    const [popupStates, setPopupStates] = useRecoilState(popupState)
+    const [reloadState, setReloadState] = useRecoilState(reload)
+
+
+    const handleClickOpen = () => {
+        setPopupStates({
+            title: "Add Item",
+            openPopup: true,
+            size: "md"
+        })
+    }
+
+
     return (
         <Container>
             <div className="breadcrumb">
@@ -97,8 +116,8 @@ const ItemList = () => {
             <Card elevation={3} sx={{ pt: '20px', mb: 3 }}>
             <CardHeader>
                 <Title>Item</Title>
-                <Button color="primary" variant="contained" onClick={()=> navigate('/material/form')}>
-
+                {/*<Button color="primary" variant="contained" onClick={()=> navigate('/material/form')}>*/}
+                <Button color="primary" variant="contained" onClick={handleClickOpen}>
                     <Span sx={{ pl: 1, textTransform: 'capitalize' }}>
                         Add Item
                     </Span>
@@ -211,6 +230,9 @@ const ItemList = () => {
                 </ProductTable>
             </Box>
         </Card>
+            <controls.popup>
+                <ItemForm />
+            </controls.popup>
         </Container>
     )
 }

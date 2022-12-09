@@ -233,6 +233,7 @@ const ItemList = () => {
             <controls.popup>
                 <ItemForm />
             </controls.popup>
+            <controls.Notification />
         </Container>
     )
 }

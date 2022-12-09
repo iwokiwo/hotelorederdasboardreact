@@ -1,14 +1,26 @@
 import {Autocomplete, Button, Grid, Paper, TextField, Box} from "@mui/material";
 import {Span} from "../../components/Typography";
 
-import {useRecoilValue} from "recoil";
+import {useRecoilState, useRecoilValue} from "recoil";
 import {useFormik} from "formik";
 
 import {setDataItemFromik} from "../../store/Item";
 import React, {useEffect} from "react";
 import {getDataUnit} from "../../store/Unit";
 import {getDataCategory} from "../../store/Category";
+import * as yup from "yup";
+import {PostMultipartFormData} from "../../services/postData";
+import {urlCreateBranch, urlCreateItem, urlUpdateBranch, urlUpdateItem} from "../../utils/constant";
+import {PutMultipartFormData} from "../../services/putData";
+import {now} from "moment";
+import {confirmDialogState, openMessage, popupState, reload} from "../../store/Controls";
 
+const validationSchema = yup.object({
+    name: yup
+        .string('Enter Name ')
+        .required('Name is required'),
+
+});
 
 const ItemForm = () => {
     const [selectedImage, setSelectedImage] = React.useState(null);
@@ -18,16 +30,58 @@ const ItemForm = () => {
     const { unit } = useRecoilValue(getDataUnit)
     const {category} = useRecoilValue(getDataCategory)
 
+    const [notif, setNotif] = useRecoilState(openMessage)
+    const [confirmDialog, setConfirmDialog] = useRecoilState(confirmDialogState)
+    const [popupStates, setPopupStates] = useRecoilState(popupState)
+    const [reloadState, setReloadState] = useRecoilState(reload)
+
     const formik = useFormik({
         initialValues : {
             ...setData
-        }
+        },
+        validationSchema: validationSchema,
+        onSubmit: (values) => {
+            if (Number(values.id) === 0) {
+                //CreateData(values)
+                console.log("add",values)
+                PostMultipartFormData(urlCreateItem, {
+                    ...values,
+                    unit_id : values.unit.ID,
+                    category_id : values.category.ID
+                }).then((value) =>
+                    setNotif({
+                        isOpen: true,
+                        message: value.message,
+                        type: value.status
+                    }))
+
+            } else {
+                console.log("edit",values)
+                const data = PutMultipartFormData(urlUpdateItem, values)
+                data.then((value) =>
+                    setNotif({
+                        isOpen: true,
+                        message: value.message,
+                        type: value.status
+                    }))
+
+            }
+
+            setPopupStates({
+                ...popupStates,
+                openPopup: false
+            })
+
+            setReloadState(now())
+
+
+        },
     })
 
     useEffect(() => {
         if (selectedImage) {
             setImageUrl(URL.createObjectURL(selectedImage));
-            formik.values.logo = selectedImage
+            formik.values.thumbnail = selectedImage
         }
     }, [selectedImage]);
 
@@ -102,6 +156,7 @@ const ItemForm = () => {
                                 console.log("e",e)
                                 console.log("value",value)
                                 formik.handleChange({ ...e, target: { name: 'unit', value: value } })
+
                             }
                         }}
                         options={unit.data}
@@ -127,6 +182,8 @@ const ItemForm = () => {
                         onChange={(e, value) => {
                             if (value != null) {
                                 formik.handleChange({ ...e, target: { name: 'category', value: value } })
+                               // formik.handleChange({ ...e, target: { name: category_id, value: value } })
+                                formik.values.category_id = value.ID
                             }
                         }}
                         options={category.data}
@@ -173,7 +230,7 @@ const ItemForm = () => {
                             {imageUrl && selectedImage  ?(
                                     <img src={imageUrl} alt={selectedImage.name} height="50px" />
                                 ):
-                                (<img src={`${formik.values.url}${formik.values.path}${formik.values.logo}`} height="50px" />)
+                                (<img src={`${formik.values.url}${formik.values.path}${formik.values.thumbnail}`} height="50px" />)
                             }
                         </Box>
                         <input

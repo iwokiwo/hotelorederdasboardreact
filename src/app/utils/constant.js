@@ -25,3 +25,8 @@ export let urlStore='/api/v1/store/searchAll'
 export let urlCreateBranch='/api/v1/branch/create'
 export let urlUpdateBranch='/api/v1/branch/update'
 export let urlBranch='/api/v1/branch/searchAll'
+
+//---------------------url Item-------------------------------
+export let urlCreateItem='/api/v1/item/create'
+export let urlUpdateItem='/api/v1/branch/update'
+export let urlItem='/api/v1/branch/searchAll'

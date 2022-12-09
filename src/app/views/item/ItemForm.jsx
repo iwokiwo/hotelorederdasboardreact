@@ -84,7 +84,7 @@ const ItemForm = () => {
             formik.values.thumbnail = selectedImage
         }
     }, [selectedImage]);
-
+    console.log("url",setData)
     return(
         <>
             <form onSubmit={formik.handleSubmit}>
@@ -226,7 +226,7 @@ const ItemForm = () => {
                                height: 115
                            }}>
                         <Box sx={{mt: 0.5, mb: 0.5, height: 50}} textAlign="center">
-
+                            {console.log("url",`${formik.values.url}${formik.values.path}${formik.values.thumbnail}`)}
                             {imageUrl && selectedImage  ?(
                                     <img src={imageUrl} alt={selectedImage.name} height="50px" />
                                 ):

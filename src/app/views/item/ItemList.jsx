@@ -18,7 +18,7 @@ import { Box, styled, useTheme } from '@mui/system'
 import { Breadcrumb, SimpleCard } from 'app/components'
 import {useRecoilState, useRecoilValue} from 'recoil'
 import { Paragraph, Span } from 'app/components/Typography'
-import { dataItem } from 'app/store/listItem'
+import {dataItem as dataItems, dataProduct} from 'app/store/Item'
 import ItemForm from "./ItemForm";
 
 import { confirmDialogState, openMessage, popupState, reload } from 'app/store/Controls'
@@ -83,11 +83,13 @@ const Container = styled('div')(({ theme }) => ({
 
 const ItemList = () => {
     const navigate = useNavigate()
-    const {product} = useRecoilValue(dataItem)
+    const {product} = useRecoilValue(dataProduct)
     const { palette } = useTheme()
     const bgError = palette.error.main
     const bgPrimary = palette.primary.main
     const bgSecondary = palette.secondary.main
+
+    const [dataItemState, setDataItemState] = useRecoilState(dataItems)
 
     const [notif, setNotif] = useRecoilState(openMessage)
     const [confirmDialog, setConfirmDialog] = useRecoilState(confirmDialogState)
@@ -220,7 +222,17 @@ const ItemList = () => {
                                     )}
                                 </TableCell>
                                 <TableCell sx={{ px: 0 }} colSpan={1}>
-                                    <IconButton>
+                                    <IconButton
+                                        onClick={()=>{
+                                            setDataItemState({
+                                                ...product
+                                            })
+                                            setPopupStates({
+                                                title: "Edit Item",
+                                                openPopup: true,
+                                                size: "md"
+                                            })
+                                        }}>
                                         <Icon color="primary">edit</Icon>
                                     </IconButton>
                                 </TableCell>

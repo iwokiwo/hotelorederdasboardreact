@@ -1,12 +1,14 @@
-import {Autocomplete, Button, Grid, Paper, TextField} from "@mui/material";
-import {useFormik} from "formik";
+import {Autocomplete, Button, Grid, Paper, TextField, Box} from "@mui/material";
+import {Span} from "../../components/Typography";
+
 import {useRecoilValue} from "recoil";
+import {useFormik} from "formik";
+
 import {setDataItemFromik} from "../../store/Item";
 import React, {useEffect} from "react";
 import {getDataUnit} from "../../store/Unit";
 import {getDataCategory} from "../../store/Category";
-import {Box} from "@mui/system";
-import {Span} from "../../components/Typography";
+
 
 const ItemForm = () => {
     const [selectedImage, setSelectedImage] = React.useState(null);
@@ -159,14 +161,14 @@ const ItemForm = () => {
                     <Paper variant="outlined"
                            sx={{
                                mt: 3.2,
-                               borderRadius: 2,
+                               borderRadius: 1,
                                border: 1,
                                p: 1,
-                               borderColor: 'lightblue',
+                               borderColor: 'lightgray',
                                textAlign:'center',
                                height: 115
                            }}>
-                        <Box sx={{mt: 0.5, mb: 0.5}} textAlign="center">
+                        <Box sx={{mt: 0.5, mb: 0.5, height: 50}} textAlign="center">
 
                             {imageUrl && selectedImage  ?(
                                     <img src={imageUrl} alt={selectedImage.name} height="50px" />
@@ -182,8 +184,8 @@ const ItemForm = () => {
                             onChange={(e) => setSelectedImage(e.target.files[0])}
                         />
                         <label htmlFor="select-image-item">
-                            <Button variant="contained" color="primary" component="span">
-                                Upload Logo
+                            <Button variant="text" color="primary" component="span">
+                                Upload Image
                             </Button>
                         </label>
 

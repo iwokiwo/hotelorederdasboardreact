@@ -24,7 +24,7 @@ export const dataItem = atom({
         available_color: 0,
         category_id: null,
         unit_id: null,
-        category: {id: 0, name:''},
+        category: {ID: 0, Name:''},
         unit: {ID: 0, Name:''},
         user_id: null,
         branch_id: null

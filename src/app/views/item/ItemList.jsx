@@ -10,7 +10,7 @@ import {
     Card,
     Select,
     Button,
-    Avatar,
+    Avatar, TablePagination,
 } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 
@@ -23,6 +23,7 @@ import ItemForm from "./ItemForm";
 
 import { confirmDialogState, openMessage, popupState, reload } from 'app/store/Controls'
 import controls from '../components'
+import {paginationWithSearch} from "../../store/Pagination";
 
 const CardHeader = styled('div')(() => ({
     paddingLeft: '24px',
@@ -95,6 +96,28 @@ const ItemList = () => {
     const [confirmDialog, setConfirmDialog] = useRecoilState(confirmDialogState)
     const [popupStates, setPopupStates] = useRecoilState(popupState)
     const [reloadState, setReloadState] = useRecoilState(reload)
+    const [paginationState, setPaginationState] = useRecoilState(paginationWithSearch)
+
+    const [page, setPage] = React.useState(2);
+    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+        setPaginationState({
+            ...paginationState,
+            page: newPage
+        })
+
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(1);
+        setPaginationState({
+            ...paginationState,
+            size: parseInt(event.target.value, 10)
+        })
+    };
 
 
     const handleClickOpen = () => {
@@ -161,7 +184,7 @@ const ItemList = () => {
                                     sx={{ px: 0, textTransform: 'capitalize' }}
                                 >
                                     <Box display="flex" alignItems="center">
-                                        <Avatar src={product.thumbnail} />
+                                        <Avatar src={`${product.url}${product.path}${product.thumbnail}`} variant="rounded" />
                                         <Paragraph sx={{ m: 0, ml: 4 }}>
                                             {product.name}
                                         </Paragraph>
@@ -240,6 +263,14 @@ const ItemList = () => {
                         ))}
                     </TableBody>
                 </ProductTable>
+                <TablePagination
+                    component="div"
+                    count={100}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    rowsPerPage={rowsPerPage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                />
             </Box>
         </Card>
             <controls.popup>

@@ -1,9 +1,9 @@
-import {atom, selector} from "recoil";
+import {atom, selector, useRecoilValue} from "recoil";
 import {dataBranch} from "./Branchs";
 import axios from "../../axios";
-import {GetData} from "../services/getData";
+import {GetDataPagination} from "../services/getData";
 import {urlBranch, urlItem} from "../utils/constant";
-import {pagination} from "./Pagination";
+import {pagination, paginationWithSearch} from "./Pagination";
 
 export const dataItem = atom({
     key: 'dataItem',
@@ -35,13 +35,15 @@ export const setDataItemFromik = selector({
 })
 
 export const dataProduct = selector({
-    key: 'data-product',
+    key: 'dataProduct',
 
-    get: async () => {
+    get: async ({get}) => {
+        const dataPagination = get(paginationWithSearch)
         let product = null;
+        console.log("data paginaton", dataPagination)
 
         try {
-            await GetData(urlItem, pagination).then((value) =>
+            await GetDataPagination(urlItem, dataPagination).then((value) =>
                 product = { product: value }
             )
             console.log("lewat",product)

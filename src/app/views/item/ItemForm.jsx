@@ -84,7 +84,7 @@ const ItemForm = () => {
             formik.values.thumbnail = selectedImage
         }
     }, [selectedImage]);
-    console.log("url",setData)
+   // console.log("url",setData)
     return(
         <>
             <form onSubmit={formik.handleSubmit}>

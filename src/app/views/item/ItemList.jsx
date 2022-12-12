@@ -10,7 +10,7 @@ import {
     Card,
     Select,
     Button,
-    Avatar, TablePagination,
+    Avatar, TablePagination, InputAdornment,
 } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 
@@ -98,7 +98,7 @@ const ItemList = () => {
     const [reloadState, setReloadState] = useRecoilState(reload)
     const [paginationState, setPaginationState] = useRecoilState(paginationWithSearch)
 
-    const [page, setPage] = React.useState(2);
+    const [page, setPage] = React.useState(1);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
     const handleChangePage = (event, newPage) => {
@@ -119,6 +119,17 @@ const ItemList = () => {
         })
     };
 
+    const handleSearch = (e) =>{
+        let target = e.target;
+        if (e.key === 'Enter') {
+            setPaginationState({
+                ...paginationState,
+                search: target.value
+            })
+          }
+       
+    }
+
 
     const handleClickOpen = () => {
         setPopupStates({
@@ -126,6 +137,125 @@ const ItemList = () => {
             openPopup: true,
             size: "md"
         })
+    }
+
+    const renderTable = () => {
+        return(
+            <ProductTable>
+            <TableHead>
+                <TableRow>
+                    <TableCell sx={{ px: 3 }} colSpan={4}>
+                        Name
+                    </TableCell>
+                    <TableCell sx={{ px: 0 }} colSpan={2}>
+                        Unit
+                    </TableCell>
+                    <TableCell sx={{ px: 0 }} colSpan={2}>
+                        Category
+                    </TableCell>
+                    <TableCell sx={{ px: 0 }} colSpan={2}>
+                        HPP
+                    </TableCell>
+                    <TableCell sx={{ px: 0 }} colSpan={2}>
+                        Price
+                    </TableCell>
+                    <TableCell sx={{ px: 0 }} colSpan={2}>
+                        Stock Status
+                    </TableCell>
+                    <TableCell sx={{ px: 0 }} colSpan={1}>
+                        Action
+                    </TableCell>
+                </TableRow>
+            </TableHead>
+            <TableBody>
+                {product.data.map((product, index) => (
+                    <TableRow key={index} hover>
+                        <TableCell
+                            colSpan={4}
+                            align="left"
+                            sx={{ px: 0, textTransform: 'capitalize' }}
+                        >
+                            <Box display="flex" alignItems="center">
+                                <Avatar src={`${product.url}${product.path}${product.thumbnail}`} variant="rounded" />
+                                <Paragraph sx={{ m: 0, ml: 4 }}>
+                                    {product.name}
+                                </Paragraph>
+                            </Box>
+                        </TableCell>
+                        <TableCell
+                            align="left"
+                            colSpan={2}
+                            sx={{ px: 0, textTransform: 'capitalize' }}
+                        >
+                         {product.unit.Name}
+                        </TableCell>
+                        <TableCell
+                            align="left"
+                            colSpan={2}
+                            sx={{ px: 0, textTransform: 'capitalize' }}
+                        >
+                         {product.category.Name}
+                        </TableCell>
+                        <TableCell
+                            align="left"
+                            colSpan={2}
+                            sx={{ px: 0, textTransform: 'capitalize' }}
+                        >
+                         {product.hpp}
+                        </TableCell>
+                        <TableCell
+                            align="left"
+                            colSpan={2}
+                            sx={{ px: 0, textTransform: 'capitalize' }}
+                        >
+                            $
+                            {product.price > 999
+                                ? (product.price / 1000).toFixed(1) +
+                                'k'
+                                : product.price}
+                        </TableCell>
+
+                        <TableCell
+                            sx={{ px: 0 }}
+                            align="left"
+                            colSpan={2}
+                        >
+                            {product.stock ? (
+                                product.stock < 20 ? (
+                                    <Small bgcolor={bgSecondary}>
+                                        {product.stock} available
+                                    </Small>
+                                ) : (
+                                    <Small bgcolor={bgPrimary}>
+                                        in stock
+                                    </Small>
+                                )
+                            ) : (
+                                <Small bgcolor={bgError}>
+                                    out of stock
+                                </Small>
+                            )}
+                        </TableCell>
+                        <TableCell sx={{ px: 0 }} colSpan={1}>
+                            <IconButton
+                                onClick={()=>{
+                                    setDataItemState({
+                                        ...product
+                                    })
+                                    setPopupStates({
+                                        title: "Edit Item",
+                                        openPopup: true,
+                                        size: "md"
+                                    })
+                                }}>
+                                <Icon color="primary">edit</Icon>
+                            </IconButton>
+                        </TableCell>
+                    </TableRow>
+                ))}
+            </TableBody>
+        </ProductTable>
+        )
     }
 
 
@@ -140,8 +270,17 @@ const ItemList = () => {
             </div>
             <Card elevation={3} sx={{ pt: '20px', mb: 3 }}>
             <CardHeader>
-                <Title>Item</Title>
+                {/* <Title>Item</Title> */}
                 {/*<Button color="primary" variant="contained" onClick={()=> navigate('/material/form')}>*/}
+                <controls.Input
+                        name="cariProduk"
+                        label="Search"
+                        InputProps={{
+                            startAdornment: (<InputAdornment position="start">
+                            </InputAdornment>)
+                        }}
+                        onKeyDown={handleSearch}
+                    />
                 <Button color="primary" variant="contained" onClick={handleClickOpen}>
                     <Span sx={{ pl: 1, textTransform: 'capitalize' }}>
                         Add Item
@@ -149,120 +288,7 @@ const ItemList = () => {
                 </Button>
             </CardHeader>
             <Box overflow="auto">
-                <ProductTable>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell sx={{ px: 3 }} colSpan={4}>
-                                Name
-                            </TableCell>
-                            <TableCell sx={{ px: 0 }} colSpan={2}>
-                                Unit
-                            </TableCell>
-                            <TableCell sx={{ px: 0 }} colSpan={2}>
-                                Category
-                            </TableCell>
-                            <TableCell sx={{ px: 0 }} colSpan={2}>
-                                HPP
-                            </TableCell>
-                            <TableCell sx={{ px: 0 }} colSpan={2}>
-                                Price
-                            </TableCell>
-                            <TableCell sx={{ px: 0 }} colSpan={2}>
-                                Stock Status
-                            </TableCell>
-                            <TableCell sx={{ px: 0 }} colSpan={1}>
-                                Action
-                            </TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {product.data.map((product, index) => (
-                            <TableRow key={index} hover>
-                                <TableCell
-                                    colSpan={4}
-                                    align="left"
-                                    sx={{ px: 0, textTransform: 'capitalize' }}
-                                >
-                                    <Box display="flex" alignItems="center">
-                                        <Avatar src={`${product.url}${product.path}${product.thumbnail}`} variant="rounded" />
-                                        <Paragraph sx={{ m: 0, ml: 4 }}>
-                                            {product.name}
-                                        </Paragraph>
-                                    </Box>
-                                </TableCell>
-                                <TableCell
-                                    align="left"
-                                    colSpan={2}
-                                    sx={{ px: 0, textTransform: 'capitalize' }}
-                                >
-                                 {product.unit.Name}
-                                </TableCell>
-                                <TableCell
-                                    align="left"
-                                    colSpan={2}
-                                    sx={{ px: 0, textTransform: 'capitalize' }}
-                                >
-                                 {product.category.Name}
-                                </TableCell>
-                                <TableCell
-                                    align="left"
-                                    colSpan={2}
-                                    sx={{ px: 0, textTransform: 'capitalize' }}
-                                >
-                                 {product.hpp}
-                                </TableCell>
-                                <TableCell
-                                    align="left"
-                                    colSpan={2}
-                                    sx={{ px: 0, textTransform: 'capitalize' }}
-                                >
-                                    $
-                                    {product.price > 999
-                                        ? (product.price / 1000).toFixed(1) +
-                                        'k'
-                                        : product.price}
-                                </TableCell>
-
-                                <TableCell
-                                    sx={{ px: 0 }}
-                                    align="left"
-                                    colSpan={2}
-                                >
-                                    {product.stock ? (
-                                        product.stock < 20 ? (
-                                            <Small bgcolor={bgSecondary}>
-                                                {product.stock} available
-                                            </Small>
-                                        ) : (
-                                            <Small bgcolor={bgPrimary}>
-                                                in stock
-                                            </Small>
-                                        )
-                                    ) : (
-                                        <Small bgcolor={bgError}>
-                                            out of stock
-                                        </Small>
-                                    )}
-                                </TableCell>
-                                <TableCell sx={{ px: 0 }} colSpan={1}>
-                                    <IconButton
-                                        onClick={()=>{
-                                            setDataItemState({
-                                                ...product
-                                            })
-                                            setPopupStates({
-                                                title: "Edit Item",
-                                                openPopup: true,
-                                                size: "md"
-                                            })
-                                        }}>
-                                        <Icon color="primary">edit</Icon>
-                                    </IconButton>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </ProductTable>
+               {renderTable()}
                 <TablePagination
                     component="div"
                     count={100}

@@ -56,8 +56,13 @@ const ItemForm = () => {
                     }))
 
             } else {
+
+                const data = PutMultipartFormData(urlUpdateItem, {
+                    ...values,
+                    unit_id : values.unit.ID,
+                    category_id : values.category.ID
+                })
                 console.log("edit",values)
-                const data = PutMultipartFormData(urlUpdateItem, values)
                 data.then((value) =>
                     setNotif({
                         isOpen: true,
@@ -156,7 +161,7 @@ const ItemForm = () => {
                                 console.log("e",e)
                                 console.log("value",value)
                                 formik.handleChange({ ...e, target: { name: 'unit', value: value } })
-
+                                // formik.values.unit_id = value.ID
                             }
                         }}
                         options={unit.data}
@@ -183,7 +188,7 @@ const ItemForm = () => {
                             if (value != null) {
                                 formik.handleChange({ ...e, target: { name: 'category', value: value } })
                                // formik.handleChange({ ...e, target: { name: category_id, value: value } })
-                                formik.values.category_id = value.ID
+                               //  formik.values.category_id = value.ID
                             }
                         }}
                         options={category.data}
@@ -226,7 +231,7 @@ const ItemForm = () => {
                                height: 115
                            }}>
                         <Box sx={{mt: 0.5, mb: 0.5, height: 50}} textAlign="center">
-                            {console.log("url",`${formik.values.url}${formik.values.path}${formik.values.thumbnail}`)}
+
                             {imageUrl && selectedImage  ?(
                                     <img src={imageUrl} alt={selectedImage.name} height="50px" />
                                 ):

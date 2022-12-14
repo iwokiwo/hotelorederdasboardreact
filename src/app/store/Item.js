@@ -4,6 +4,7 @@ import axios from "../../axios";
 import {GetDataPagination} from "../services/getData";
 import {urlBranch, urlItem} from "../utils/constant";
 import {pagination, paginationWithSearch} from "./Pagination";
+import {reload} from "./Controls";
 
 export const dataItem = atom({
     key: 'dataItem',
@@ -39,6 +40,7 @@ export const dataProduct = selector({
 
     get: async ({get}) => {
         const dataPagination = get(paginationWithSearch)
+        get(reload)
         let product = null;
         console.log("data paginaton", dataPagination)
 

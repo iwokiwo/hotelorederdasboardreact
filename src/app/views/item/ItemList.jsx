@@ -127,7 +127,7 @@ const ItemList = () => {
                 search: target.value
             })
           }
-       
+
     }
 
 
@@ -154,7 +154,7 @@ const ItemList = () => {
                         Category
                     </TableCell>
                     <TableCell sx={{ px: 0 }} colSpan={2}>
-                        HPP
+                        Sale Price
                     </TableCell>
                     <TableCell sx={{ px: 0 }} colSpan={2}>
                         Price
@@ -201,7 +201,7 @@ const ItemList = () => {
                             colSpan={2}
                             sx={{ px: 0, textTransform: 'capitalize' }}
                         >
-                         {product.hpp}
+                         {product.sale_price}
                         </TableCell>
                         <TableCell
                             align="left"

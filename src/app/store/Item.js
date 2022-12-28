@@ -19,7 +19,7 @@ export const dataItem = atom({
         stock: 0,
         active: 1,
         description: "",
-        hpp: 0,
+        sale_price: 0,
         category_id: 0,
         unit_id: 0,
         category: {ID: 0, Name:''},

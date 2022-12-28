@@ -1,5 +1,6 @@
-import {Autocomplete, Button, Grid, Paper, TextField, Box} from "@mui/material";
+import {Autocomplete, Button, Grid, Paper, TextField, Box, Tabs, Tab, Typography} from "@mui/material";
 import {Span} from "../../components/Typography";
+import PropTypes from 'prop-types';
 
 import {useRecoilState, useRecoilValue} from "recoil";
 import {useFormik} from "formik";
@@ -14,6 +15,7 @@ import {urlCreateBranch, urlCreateItem, urlUpdateBranch, urlUpdateItem} from "..
 import {PutMultipartFormData} from "../../services/putData";
 import {now} from "moment";
 import {confirmDialogState, openMessage, popupState, reload} from "../../store/Controls";
+import { TabContext, TabList, TabPanel } from "@mui/lab";
 
 const validationSchema = yup.object({
     name: yup
@@ -22,6 +24,7 @@ const validationSchema = yup.object({
 
 });
 
+
 const ItemForm = () => {
     const [selectedImage, setSelectedImage] = React.useState(null);
     const [imageUrl, setImageUrl] = React.useState(null);
@@ -29,11 +32,16 @@ const ItemForm = () => {
     const setData = useRecoilValue(setDataItemFromik)
     const { unit } = useRecoilValue(getDataUnit)
     const {category} = useRecoilValue(getDataCategory)
-
     const [notif, setNotif] = useRecoilState(openMessage)
     const [confirmDialog, setConfirmDialog] = useRecoilState(confirmDialogState)
     const [popupStates, setPopupStates] = useRecoilState(popupState)
     const [reloadState, setReloadState] = useRecoilState(reload)
+
+    const [valueTab, setValueTab] = React.useState("1")
+
+    const handleChangeTab = (event, newValue) => {
+        setValueTab(newValue)
+    }
 
     const formik = useFormik({
         initialValues : {
@@ -89,10 +97,19 @@ const ItemForm = () => {
             formik.values.thumbnail = selectedImage
         }
     }, [selectedImage]);
-   // console.log("url",setData)
+
     return(
         <>
             <form onSubmit={formik.handleSubmit}>
+            <TabContext value={valueTab}>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <TabList onChange={handleChangeTab} aria-label="lab API tabs example">
+                <Tab label="Item" value="1" />
+                <Tab label="Image" value="2" />
+                <Tab label="Item Three" value="3" />
+            </TabList>
+            </Box>
+            <TabPanel value="1">
             <Grid container spacing={6}>
                 <Grid item lg={6} md={6} sm={12} xs={12} sx={{ mt: 2 }}>
                     <TextField
@@ -122,13 +139,13 @@ const ItemForm = () => {
                     />
                     <TextField
                         fullWidth
-                        id="hpp"
-                        name="hpp"
-                        label="Hpp"
-                        value={formik.values.hpp}
+                        id="sale_price"
+                        name="sale_price"
+                        label="Sale Price"
+                        value={formik.values.sale_price}
                         onChange={formik.handleChange}
-                        error={formik.touched.hpp && Boolean(formik.errors.hpp)}
-                        helperText={formik.touched.hpp && formik.errors.hpp}
+                        error={formik.touched.sale_price && Boolean(formik.errors.sale_price)}
+                        helperText={formik.touched.sale_price && formik.errors.sale_price}
                         sx={{mt: 3.1}}
                     />
                     <TextField
@@ -255,6 +272,10 @@ const ItemForm = () => {
 
                 </Grid>
             </Grid>
+            </TabPanel>
+            <TabPanel value="2">Item Two</TabPanel>
+            <TabPanel value="3">Item Three</TabPanel>
+        </TabContext>
                 <Box textAlign={"right"}>
                     <Button color="primary" variant="text" type="submit" sx={{mt: 5}}>
                         {/* <Icon>send</Icon> */}

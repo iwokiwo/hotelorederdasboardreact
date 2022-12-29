@@ -98,7 +98,7 @@ const ItemList = () => {
     const [reloadState, setReloadState] = useRecoilState(reload)
     const [paginationState, setPaginationState] = useRecoilState(paginationWithSearch)
 
-    const [page, setPage] = React.useState(1);
+    const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
     const handleChangePage = (event, newPage) => {
@@ -112,7 +112,7 @@ const ItemList = () => {
 
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(parseInt(event.target.value, 10));
-        setPage(1);
+        setPage(0);
         setPaginationState({
             ...paginationState,
             size: parseInt(event.target.value, 10)
@@ -136,6 +136,23 @@ const ItemList = () => {
             title: "Add Item",
             openPopup: true,
             size: "md"
+        })
+        setDataItemState({
+            id: 0,
+            name: "",
+            thumbnail: "",
+            thumbnailOld: "",
+            url:"",
+            path:"",
+            price: 0,
+            quantity: 0,
+            active: 1,
+            description: "",
+            sale_price: 0,
+            category_id: 0,
+            unit_id: 0,
+            category: {ID: 0, Name:''},
+            unit: {ID: 0, Name:''},
         })
     }
 
@@ -220,10 +237,10 @@ const ItemList = () => {
                             align="left"
                             colSpan={2}
                         >
-                            {product.stock ? (
-                                product.stock < 20 ? (
+                            {product.quantity ? (
+                                product.quantity < 20 ? (
                                     <Small bgcolor={bgSecondary}>
-                                        {product.stock} available
+                                        {product.quantity} available
                                     </Small>
                                 ) : (
                                     <Small bgcolor={bgPrimary}>
@@ -240,7 +257,8 @@ const ItemList = () => {
                             <IconButton
                                 onClick={()=>{
                                     setDataItemState({
-                                        ...product
+                                        ...product,
+                                        thumbnailOld: product.thumbnail,
                                     })
                                     setPopupStates({
                                         title: "Edit Item",
@@ -291,7 +309,7 @@ const ItemList = () => {
                {renderTable()}
                 <TablePagination
                     component="div"
-                    count={100}
+                    count={13}
                     page={page}
                     onPageChange={handleChangePage}
                     rowsPerPage={rowsPerPage}

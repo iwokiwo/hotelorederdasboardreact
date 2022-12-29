@@ -225,13 +225,13 @@ const ItemForm = () => {
                     />
                     <TextField
                         fullWidth
-                        id="stock"
-                        name="stock"
+                        id="quantity"
+                        name="quantity"
                         label="Stock"
-                        value={formik.values.stock}
+                        value={formik.values.quantity}
                         onChange={formik.handleChange}
-                        error={formik.touched.stock && Boolean(formik.errors.stock)}
-                        helperText={formik.touched.stock && formik.errors.stock}
+                        error={formik.touched.quantity && Boolean(formik.errors.quantity)}
+                        helperText={formik.touched.quantity && formik.errors.quantity}
                         sx={{mt: 2.1}}
                         InputLabelProps={{
                             shrink: true,

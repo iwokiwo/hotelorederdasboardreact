@@ -16,7 +16,7 @@ export const dataItem = atom({
         url:"",
         path:"",
         price: 0,
-        stock: 0,
+        quantity: 0,
         active: 1,
         description: "",
         sale_price: 0,

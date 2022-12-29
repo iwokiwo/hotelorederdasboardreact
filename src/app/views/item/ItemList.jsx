@@ -309,7 +309,7 @@ const ItemList = () => {
                {renderTable()}
                 <TablePagination
                     component="div"
-                    count={13}
+                    count={product.total}
                     page={page}
                     onPageChange={handleChangePage}
                     rowsPerPage={rowsPerPage}

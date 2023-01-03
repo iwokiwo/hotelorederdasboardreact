@@ -34,3 +34,29 @@ export async function PutMultipartFormData(url, dataPost) {
   return data;
 
 }
+
+export async function PutMultipartFormDataMultiFile(url, dataPost) {
+
+  const formData = new FormData()
+  Object.keys(dataPost).forEach((key) => {
+    if(key === "multiFile"){
+      dataPost['multiFile'].map(data=>{
+        formData.append(key, data)
+        
+      })
+      return
+    }
+    formData.append(key, dataPost[key])
+  })
+
+  const response = await axios.put(url, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data; boundary=${dataPost.getBoundary()}',
+      'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+    },
+  })
+  const data = await response.data;
+
+  return data;
+
+}

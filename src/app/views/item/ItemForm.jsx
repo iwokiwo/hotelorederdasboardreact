@@ -17,9 +17,9 @@ import React, {useEffect} from "react";
 import {getDataUnit} from "../../store/Unit";
 import {getDataCategory} from "../../store/Category";
 import * as yup from "yup";
-import {PostMultipartFormData} from "../../services/postData";
+import {PostMultipartFormDataMultiFile} from "../../services/postData";
 import {urlCreateBranch, urlCreateItem, urlUpdateBranch, urlUpdateItem} from "../../utils/constant";
-import {PutMultipartFormData} from "../../services/putData";
+import {PutMultipartFormDataMultiFile} from "../../services/putData";
 import {now} from "moment";
 import {confirmDialogState, openMessage, popupState, reload} from "../../store/Controls";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
@@ -30,6 +30,8 @@ const validationSchema = yup.object({
         .required('Name is required'),
 
 });
+
+const MAX_COUNT = 5;
 
 
 const ItemForm = () => {
@@ -46,13 +48,34 @@ const ItemForm = () => {
 
     const [valueTab, setValueTab] = React.useState("1")
     const [images, setImages] = React.useState([]);
+    const [uploadImages, setUploadImages] = React.useState([]);
+    const [uploadedFiles, setUploadedFiles] = React.useState([])
+  
     const maxNumber = 69;
 
 
+    const blobFile= (file) => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          resolve(event.target.result)
+        };
+        reader.readAsDataURL(file);
+        })
+    
     const onChange = (imageList, addUpdateIndex) => {
       // data for submit
-      console.log(imageList, addUpdateIndex);
+     // console.log(imageList, addUpdateIndex);
       setImages(imageList);
+      formik.values.gallery = imageList
+
+      uploadImages.length = 0
+      uploadedFiles.length = 0
+      imageList.map( x => {
+        uploadImages.push(x.file)
+    
+      })
+  
+      formik.values.multiFile = uploadImages
     };
 
     const handleChangeTab = (event, newValue) => {
@@ -147,10 +170,11 @@ const ItemForm = () => {
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
+            console.log("add",values)
+            // return
             if (Number(values.id) === 0) {
                 //CreateData(values)
-                console.log("add",values)
-                PostMultipartFormData(urlCreateItem, {
+                PostMultipartFormDataMultiFile(urlCreateItem, {
                     ...values,
                     unit_id : values.unit.ID,
                     category_id : values.category.ID
@@ -163,7 +187,7 @@ const ItemForm = () => {
 
             } else {
 
-                const data = PutMultipartFormData(urlUpdateItem, {
+                const data = PutMultipartFormDataMultiFile(urlUpdateItem, {
                     ...values,
                     unit_id : values.unit.ID,
                     category_id : values.category.ID
@@ -194,6 +218,8 @@ const ItemForm = () => {
             setImageUrl(URL.createObjectURL(selectedImage));
             formik.values.thumbnail = selectedImage
         }
+
+        console.log("selectedImage",selectedImage)
     }, [selectedImage]);
 
     return(

@@ -53,29 +53,25 @@ const ItemForm = () => {
   
     const maxNumber = 69;
 
-
-    const blobFile= (file) => new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          resolve(event.target.result)
-        };
-        reader.readAsDataURL(file);
-        })
     
     const onChange = (imageList, addUpdateIndex) => {
       // data for submit
      // console.log(imageList, addUpdateIndex);
       setImages(imageList);
-      formik.values.gallery = imageList
 
       uploadImages.length = 0
       uploadedFiles.length = 0
       imageList.map( x => {
         uploadImages.push(x.file)
+        uploadedFiles.push(x.file.name)
+         //  uploadedFiles.push({Filenames : x.file.name})
+        console.log("uploadImages", x.file.name)
     
       })
   
       formik.values.multiFile = uploadImages
+      formik.values.gallery = uploadedFiles
+    
     };
 
     const handleChangeTab = (event, newValue) => {

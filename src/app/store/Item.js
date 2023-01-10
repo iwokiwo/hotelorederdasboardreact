@@ -14,6 +14,7 @@ export const dataItem = atom({
         thumbnail: "",
         thumbnailOld: "",
         gallery:[],
+        galleryOld:[],
         multiFile:[],
         url:"",
         path:"",

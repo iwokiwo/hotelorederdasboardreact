@@ -153,6 +153,9 @@ const ItemList = () => {
             unit_id: 0,
             category: {ID: 0, Name:''},
             unit: {ID: 0, Name:''},
+            gallery:[],
+            galleryOld:[],
+            multiFile:[],
         })
     }
 
@@ -259,6 +262,7 @@ const ItemList = () => {
                                     setDataItemState({
                                         ...product,
                                         thumbnailOld: product.thumbnail,
+                                        galleryOld: product.gallery
                                     })
                                     setPopupStates({
                                         title: "Edit Item",

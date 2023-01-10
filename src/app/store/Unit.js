@@ -65,9 +65,9 @@ export const getDataUnit = selector({
         } catch (error) {
           
             unit=  {unit: []}
-            console.log("unit",unit)
+           // console.log("unit",unit)
         }
-        console.log("unit",unit)
+       // console.log("unit",unit)
         return unit
     }
 })

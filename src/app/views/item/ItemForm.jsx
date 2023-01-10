@@ -53,7 +53,7 @@ const ItemForm = () => {
   
     const maxNumber = 69;
 
-    
+    console.log("setData",setData)
     const onChange = (imageList, addUpdateIndex) => {
       // data for submit
      // console.log(imageList, addUpdateIndex);
@@ -136,14 +136,28 @@ const ItemForm = () => {
                                                 <Paper elevation={10} sx={{p: 1}}>
                                                 <Grid container spacing={1} direction="row" sx={{ mt: 1 , justifyContent: "center"}}>
                                                     <Grid item xs={12}>
-                                                        <img src={image.data_url} alt="" height="150" width="175" />
+                                                        <img src={image.data_url } alt="" height="150" width="175" />
                                                         <IconButton size="small" color="error" onClick={() => onImageRemove(index)} sx={{mt: -46, ml: 24.5}}><CancelIcon /> </IconButton>
                                                     </Grid>
-                                                    <Grid item xs={12} >
+                                                    {/* <Grid item xs={12} >
                                                         <Button size="medium" color="primary" variant="outlined" onClick={() => onImageUpdate(index)} startIcon={<ModeIcon /> }>Edit</Button>
 
-                                                        {/* <IconButton size="small" color="error" sx={{ ml: 1 }} onClick={() => onImageRemove(index)}> <DeleteIcon /> </IconButton> */}
+                                                 
+                                                    </Grid> */}
+                                                </Grid>
+                                                </Paper>
+
+                                            </Grid>
+                                        ))}
+                                         {Array.from(setData.galleryOld).map((image, index) => (
+                                            <Grid item xs={4} key={index}>
+                                                <Paper elevation={10} sx={{p: 1}}>
+                                                <Grid container spacing={1} direction="row" sx={{ mt: 1 , justifyContent: "center"}}>
+                                                    <Grid item xs={12}>
+                                                        <img src={`${image.Url}${image.Path}${image.Filename}` } alt="" height="150" width="175" />
+                                                        <IconButton size="small" color="error" onClick={() => onImageRemove(index)} sx={{mt: -46, ml: 24.5}}><CancelIcon /> </IconButton>
                                                     </Grid>
+                                                 
                                                 </Grid>
                                                 </Paper>
 

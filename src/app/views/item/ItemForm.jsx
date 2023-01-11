@@ -1,4 +1,4 @@
-import {Autocomplete, Button, Grid, Paper, TextField, Box, Tabs, Tab, Typography, IconButton} from "@mui/material";
+import {Autocomplete, Button, Grid, Paper, TextField, Box, Tabs, Tab, Typography, IconButton, Alert} from "@mui/material";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -54,22 +54,12 @@ const ItemForm = () => {
     const [galleryTmp, setGalleryTmp] = React.useState([])
   
     const maxNumber = 69;
+    const maxFileSize = 300000
 
     const onChange = (imageList, addUpdateIndex) => {
 
         uploadImages.length = 0
-        imageList.map(x => {
-
-            if (x.file.size > 600000) {
-                setNotif({
-                    isOpen: true,
-                    message: `Image ${x.file.name} cannot be more than 600 kb`,
-                    type: "warning"
-                })
-    
-                return
-            }
-    
+        imageList.map(x => {    
             uploadImages.push(x.file)
 
         })
@@ -113,6 +103,7 @@ const ItemForm = () => {
                             value={images}
                             onChange={onChange}
                             maxNumber={maxNumber}
+                            maxFileSize={maxFileSize}
                             dataURLKey="data_url"
                             acceptType={["jpg"]}
                         >
@@ -123,10 +114,18 @@ const ItemForm = () => {
                                 onImageUpdate,
                                 onImageRemove,
                                 isDragging,
-                                dragProps
+                                dragProps,
+                                errors
                             }) => (
+                              
                                 // write your building UI
                                 <div>
+                                    {/* {console.log(errors)} */}
+                                    {errors && 
+                                    <>
+                                        <Alert severity="error">Selected file size exceed max file size (300 kb) </Alert>
+                                    </>
+                                    }
                                     <Paper elevation={0} sx={{
                                         p: 1,
                                     }}>

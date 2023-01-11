@@ -56,23 +56,25 @@ const ItemForm = () => {
     const maxNumber = 69;
 
     const onChange = (imageList, addUpdateIndex) => {
-      // data for submit
-     // console.log(imageList, addUpdateIndex);
-      setImages(imageList);
 
-      uploadImages.length = 0
-     // uploadedFiles.length = 0
-      imageList.map( x => {
-        uploadImages.push(x.file)
-        //uploadedFiles.push(x.file.name)
-         //  uploadedFiles.push({Filenames : x.file.name})
-        console.log("uploadImages", x.file.name)
+        uploadImages.length = 0
+        imageList.map(x => {
+
+            if (x.file.size > 600000) {
+                setNotif({
+                    isOpen: true,
+                    message: `Image ${x.file.name} cannot be more than 600 kb`,
+                    type: "warning"
+                })
     
-      })
-  
-      formik.values.multiFile = uploadImages
-      //formik.values.gallery = uploadedFiles
+                return
+            }
     
+            uploadImages.push(x.file)
+
+        })
+        setImages(imageList);
+        formik.values.multiFile = uploadImages
     };
 
     const handleChangeTab = (event, newValue) => {
@@ -144,7 +146,7 @@ const ItemForm = () => {
                                     </Paper>
 
                                     <Grid container spacing={{ xs: 2, md: 3 }} sx={{ p: 1,  justifyContent: "center" }}>
-                                        {Array.from(imageList).map((image, index) => (
+                                        {Array.from(images).map((image, index) => (
                                             <Grid item xs={4} key={index}>
                                                 <Paper elevation={10} sx={{p: 1}}>
                                                 <Grid container spacing={1} direction="row" sx={{ mt: 1 , justifyContent: "center"}}>
@@ -243,6 +245,7 @@ const ItemForm = () => {
         }
 
         console.log("selectedImage",selectedImage)
+     
     }, [selectedImage]);
 
     useEffect(()=>{

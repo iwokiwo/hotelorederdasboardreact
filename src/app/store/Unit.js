@@ -87,7 +87,7 @@ export const createDataUnit = selectorFamily({
             units = { units: error }
 
         }
-        console.log("unit", units)
+     //   console.log("unit", units)
         return units
     }
 

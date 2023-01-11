@@ -40,6 +40,14 @@ export async function PostMultipartFormDataMultiFile(url, dataPost) {
   Object.keys(dataPost).forEach((key) => {
     if(key === "multiFile"){
       dataPost['multiFile'].map(data=>{
+        const newName = new Date().getTime() + data.name;  
+        formData.append(key, data, newName)
+        
+      })
+      return
+    }
+    if(key === "multiFileDelete"){
+      dataPost['multiFileDelete'].map(data=>{
         formData.append(key, data)
         
       })

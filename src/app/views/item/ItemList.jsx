@@ -154,7 +154,7 @@ const ItemList = () => {
             category: {ID: 0, Name:''},
             unit: {ID: 0, Name:''},
             gallery:[],
-            galleryOld:[],
+            multiFileDelete:[],
             multiFile:[],
         })
     }

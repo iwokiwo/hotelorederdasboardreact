@@ -45,13 +45,13 @@ export const dataProduct = selector({
         const dataPagination = get(paginationWithSearch)
         get(reload)
         let product = null;
-        console.log("data paginaton", dataPagination)
+        //console.log("data paginaton", dataPagination)
 
         try {
             await GetDataPagination(urlItem, dataPagination).then((value) =>
                 product = { product: value }
             )
-            console.log("lewat",product)
+           // console.log("lewat",product)
         } catch (error) {
             product=  {product: error}
         }

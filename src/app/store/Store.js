@@ -41,7 +41,7 @@ export const getDataStore = selector({
         } catch (error) {
             data=  {data: []}
         }
-        console.log("getDataStore",data)
+      //  console.log("getDataStore",data)
         return data
     }
 })

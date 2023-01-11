@@ -11,7 +11,7 @@ const dataProduct = selector({
         try {
             let {data} = await axios.get('/product')
             product ={product: data}
-            console.log("lewat",product)
+           // console.log("lewat",product)
         } catch (error) {
             product=  {product: error}
         }

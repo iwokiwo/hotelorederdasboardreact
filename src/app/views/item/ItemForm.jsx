@@ -23,6 +23,7 @@ import {PutMultipartFormDataMultiFile} from "../../services/putData";
 import {now} from "moment";
 import {confirmDialogState, openMessage, popupState, reload} from "../../store/Controls";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
+import { remove } from "lodash";
 
 const validationSchema = yup.object({
     name: yup
@@ -50,32 +51,43 @@ const ItemForm = () => {
     const [images, setImages] = React.useState([]);
     const [uploadImages, setUploadImages] = React.useState([]);
     const [uploadedFiles, setUploadedFiles] = React.useState([])
+    const [galleryTmp, setGalleryTmp] = React.useState([])
   
     const maxNumber = 69;
 
-    console.log("setData",setData)
     const onChange = (imageList, addUpdateIndex) => {
       // data for submit
      // console.log(imageList, addUpdateIndex);
       setImages(imageList);
 
       uploadImages.length = 0
-      uploadedFiles.length = 0
+     // uploadedFiles.length = 0
       imageList.map( x => {
         uploadImages.push(x.file)
-        uploadedFiles.push(x.file.name)
+        //uploadedFiles.push(x.file.name)
          //  uploadedFiles.push({Filenames : x.file.name})
         console.log("uploadImages", x.file.name)
     
       })
   
       formik.values.multiFile = uploadImages
-      formik.values.gallery = uploadedFiles
+      //formik.values.gallery = uploadedFiles
     
     };
 
     const handleChangeTab = (event, newValue) => {
         setValueTab(newValue)
+    }
+
+    
+    const deleteImgGalery = (item) => {
+        
+        const dataRemove = galleryTmp.filter(x => x.Filename !== item.Filename)
+        setGalleryTmp(dataRemove)
+      
+        console.log("alleryTmp.filter(x => x.Filename === item.Filename)",galleryTmp.filter(x => x.Filename === item.Filename))
+        uploadedFiles.push(galleryTmp.filter(x => x.Filename === item.Filename)[0].Filename)
+        formik.values.multiFileDelete = uploadedFiles
     }
 
     const renderFormUploadImage = () => {
@@ -119,6 +131,7 @@ const ItemForm = () => {
                                         <Button
                                             variant="outlined"
                                             size="large"
+                                            sx={{height: '60px'}}
                                             startIcon={<CloudUploadIcon />}
                                             style={isDragging ? { color: "orange" } : null}
                                             onClick={onImageUpload}
@@ -127,7 +140,7 @@ const ItemForm = () => {
                                             Upload Images Or Drag & Drop 
                                         </Button>
 
-                                        <Button variant="outlined" size="large" color="error" startIcon={<RemoveCircleIcon />} sx={{ ml: 1 }} onClick={onImageRemoveAll}>Remove all images</Button>
+                                        {/* <Button variant="outlined" size="large" color="error" startIcon={<RemoveCircleIcon />} sx={{ ml: 1 }} onClick={onImageRemoveAll}>Remove all images</Button> */}
                                     </Paper>
 
                                     <Grid container spacing={{ xs: 2, md: 3 }} sx={{ p: 1,  justifyContent: "center" }}>
@@ -149,13 +162,13 @@ const ItemForm = () => {
 
                                             </Grid>
                                         ))}
-                                         {Array.from(setData.galleryOld).map((image, index) => (
+                                         {Array.from(galleryTmp).map((image, index) => (
                                             <Grid item xs={4} key={index}>
                                                 <Paper elevation={10} sx={{p: 1}}>
                                                 <Grid container spacing={1} direction="row" sx={{ mt: 1 , justifyContent: "center"}}>
                                                     <Grid item xs={12}>
                                                         <img src={`${image.Url}${image.Path}${image.Filename}` } alt="" height="150" width="175" />
-                                                        <IconButton size="small" color="error" onClick={() => onImageRemove(index)} sx={{mt: -46, ml: 24.5}}><CancelIcon /> </IconButton>
+                                                        <IconButton size="small" color="error" onClick={() => deleteImgGalery(image)} sx={{mt: -46, ml: 24.5}}><CancelIcon /> </IconButton>
                                                     </Grid>
                                                  
                                                 </Grid>
@@ -181,7 +194,7 @@ const ItemForm = () => {
         validationSchema: validationSchema,
         onSubmit: (values) => {
             console.log("add",values)
-            // return
+            
             if (Number(values.id) === 0) {
                 //CreateData(values)
                 PostMultipartFormDataMultiFile(urlCreateItem, {
@@ -231,6 +244,10 @@ const ItemForm = () => {
 
         console.log("selectedImage",selectedImage)
     }, [selectedImage]);
+
+    useEffect(()=>{
+        setGalleryTmp(setData.multiFileDelete)
+    },[])
 
     return(
         <>

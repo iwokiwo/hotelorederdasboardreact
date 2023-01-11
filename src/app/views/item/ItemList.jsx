@@ -262,7 +262,7 @@ const ItemList = () => {
                                     setDataItemState({
                                         ...product,
                                         thumbnailOld: product.thumbnail,
-                                        galleryOld: product.gallery
+                                        multiFileDelete: product.gallery
                                     })
                                     setPopupStates({
                                         title: "Edit Item",

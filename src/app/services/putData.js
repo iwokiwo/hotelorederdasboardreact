@@ -46,8 +46,18 @@ export async function PutMultipartFormDataMultiFile(url, dataPost) {
       })
       return
     }
+
+    if(key === "multiFileDelete"){
+      dataPost['multiFileDelete'].map(data=>{
+        formData.append(key, data)
+        
+      })
+      return
+    }
+
     formData.append(key, dataPost[key])
   })
+
 
   const response = await axios.put(url, formData, {
     headers: {

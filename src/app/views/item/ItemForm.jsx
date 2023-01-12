@@ -194,7 +194,7 @@ const ItemForm = () => {
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
-            console.log("add",values)
+          //  console.log("add",values)
             
             if (Number(values.id) === 0) {
                 //CreateData(values)
@@ -216,7 +216,7 @@ const ItemForm = () => {
                     unit_id : values.unit.ID,
                     category_id : values.category.ID
                 })
-                console.log("edit",values)
+              //  console.log("edit",values)
                 data.then((value) =>
                     setNotif({
                         isOpen: true,
@@ -238,9 +238,24 @@ const ItemForm = () => {
     })
 
     useEffect(() => {
+        // if(selectedImage.size > 300000){
+        //     setNotif({
+        //         isOpen: true,
+        //         message: "Selected file size exceed max file size (300 kb) ",
+        //         type: "warning"
+        //     })
+        //     return
+        // }
         if (selectedImage) {
             setImageUrl(URL.createObjectURL(selectedImage));
-            formik.values.thumbnail = selectedImage
+            // const myReader = new FileReader();
+            // myReader.readAsBinaryString(selectedImage)
+            // myReader.onload = () => console.log(myReader.result);
+
+            const newName = new Date().getTime() + selectedImage.name;  
+            const myRenamedFile = new File([selectedImage], newName);
+            //console.log("myRenamedFile", myRenamedFile)
+            formik.values.thumbnail = myRenamedFile
         }
 
         console.log("selectedImage",selectedImage)

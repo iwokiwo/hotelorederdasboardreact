@@ -370,7 +370,9 @@ const BranchList = () => {
     useEffect(() => {
         if (selectedImage) {
             setImageUrl(URL.createObjectURL(selectedImage));
-            formik.values.logo = selectedImage
+            const newName = new Date().getTime() + selectedImage.name;  
+            const myRenamedFile = new File([selectedImage], newName);
+            formik.values.logo = myRenamedFile
         }
     }, [selectedImage]);
 

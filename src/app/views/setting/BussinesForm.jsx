@@ -154,7 +154,18 @@ const BussinesForm = () => {
                                 type="file"
                                 id="select-image"
                                 style={{ display: "none" }}
-                                onChange={(e) => setSelectedImage(e.target.files[0])}
+                                onChange={(e) =>{
+                                    if (e.target.files[0].size > 300000) {
+                                        setNotif({
+                                            isOpen: true,
+                                            message: "Selected file size exceed max file size (300 kb) ",
+                                            type: "warning"
+                                        })
+                                        return
+                                    }
+                                    setSelectedImage(e.target.files[0])
+                                }
+                                }
                             />
                             <label htmlFor="select-image">
                                 <Button variant="contained" color="primary" component="span">

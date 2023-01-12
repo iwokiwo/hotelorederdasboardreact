@@ -428,7 +428,18 @@ const ItemForm = () => {
                                         type="file"
                                         id="select-image-item"
                                         style={{ display: "none" }}
-                                        onChange={(e) => setSelectedImage(e.target.files[0])}
+                                        onChange={(e) =>{ 
+                                            if (e.target.files[0].size > maxFileSize) {
+                                                setNotif({
+                                                    isOpen: true,
+                                                    message: "Selected file size exceed max file size (300 kb) ",
+                                                    type: "warning"
+                                                })
+                                                return
+                                            }
+                                            setSelectedImage(e.target.files[0])
+                                        }
+                                        }
                                     />
                                     <label htmlFor="select-image-item">
                                         <Button variant="text" color="primary" component="span" startIcon={<CloudUploadIcon/>}>
@@ -447,9 +458,9 @@ const ItemForm = () => {
                 <Box textAlign={"right"}>
                     <Button color="primary" variant="text" type="submit" sx={{ mt: 5 }}>
                         {/* <Icon>send</Icon> */}
-                        <Span sx={{ textTransform: 'capitalize' }}>
-                            Submit
-                        </Span>
+                      
+                            <Typography variant="button" display="block"> Submit</Typography>
+                       
                     </Button>
                 </Box>
             </form>

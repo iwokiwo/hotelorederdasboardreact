@@ -10,9 +10,10 @@ import {
     Card,
     Select,
     Button,
-    Avatar, TablePagination, InputAdornment,
+    Avatar, TablePagination, InputAdornment, Stack,
 } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
+import SearchIcon from '@mui/icons-material/Search';
 
 import { Box, styled, useTheme } from '@mui/system'
 import { Breadcrumb, SimpleCard } from 'app/components'
@@ -100,6 +101,7 @@ const ItemList = () => {
 
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const [search, setSearch] = React.useState('')
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -121,12 +123,23 @@ const ItemList = () => {
 
     const handleSearch = (e) =>{
         let target = e.target;
+        setSearch(target.value)
         if (e.key === 'Enter') {
             setPaginationState({
                 ...paginationState,
                 search: target.value
             })
           }
+
+    }
+
+    const handleSearchButton = () =>{
+
+            setPaginationState({
+                ...paginationState,
+                search: search
+            })
+          
 
     }
 
@@ -294,15 +307,24 @@ const ItemList = () => {
             <CardHeader>
                 {/* <Title>Item</Title> */}
                 {/*<Button color="primary" variant="contained" onClick={()=> navigate('/material/form')}>*/}
-                <controls.Input
-                        name="cariProduk"
-                        label="Search"
-                        InputProps={{
-                            startAdornment: (<InputAdornment position="start">
-                            </InputAdornment>)
-                        }}
-                        onKeyDown={handleSearch}
-                    />
+                    <Box>
+                        <Stack direction="row" spacing={2}>
+                            <controls.Input
+                                name="cariProduk"
+                                label="Search"
+                                InputProps={{
+                                    startAdornment: (<InputAdornment position="start">
+                                    </InputAdornment>)
+                                }}
+                                onKeyDown={handleSearch}
+                            />
+                            <Button color="primary" variant="contained" onClick={handleSearchButton}>
+                                <SearchIcon />
+                            </Button>
+                        </Stack>
+
+                </Box>
+           
                 <Button color="primary" variant="contained" onClick={handleClickOpen}>
                     <Span sx={{ pl: 1, textTransform: 'capitalize' }}>
                         Add Item

@@ -1,6 +1,4 @@
 import {atom, selector, useRecoilValue} from "recoil";
-import {dataBranch} from "./Branchs";
-import axios from "../../axios";
 import {GetDataPagination} from "../services/getData";
 import {urlBranch, urlItem} from "../utils/constant";
 import {pagination, paginationWithSearch} from "./Pagination";

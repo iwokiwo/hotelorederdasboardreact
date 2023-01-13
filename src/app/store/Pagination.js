@@ -17,7 +17,7 @@ export const paginationWithSearch = atom({
     default: {
         page: 0,
         size: 10,
-        sort: "created_at desc",
+        sort: "id desc",
         direction: "",
         active: 1,
         stock: 0,

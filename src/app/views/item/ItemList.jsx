@@ -14,10 +14,12 @@ import {
 } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import SearchIcon from '@mui/icons-material/Search';
-
+import DeleteIcon from '@mui/icons-material/DeleteOutline';
 import { Box, styled, useTheme } from '@mui/system'
 import { Breadcrumb, SimpleCard } from 'app/components'
-import {useRecoilState, useRecoilValue} from 'recoil'
+import {now} from "moment";
+
+import {useRecoilCallback, useRecoilRefresher_UNSTABLE, useRecoilState, useRecoilValue} from 'recoil'
 import { Paragraph, Span } from 'app/components/Typography'
 import {dataItem as dataItems, dataProduct} from 'app/store/Item'
 import ItemForm from "./ItemForm";
@@ -25,6 +27,8 @@ import ItemForm from "./ItemForm";
 import { confirmDialogState, openMessage, popupState, reload } from 'app/store/Controls'
 import controls from '../components'
 import {paginationWithSearch} from "../../store/Pagination";
+import { urlDeleteItem } from 'app/utils/constant';
+import { DeleteData } from 'app/services/deteleData';
 
 const CardHeader = styled('div')(() => ({
     paddingLeft: '24px',
@@ -98,6 +102,7 @@ const ItemList = () => {
     const [popupStates, setPopupStates] = useRecoilState(popupState)
     const [reloadState, setReloadState] = useRecoilState(reload)
     const [paginationState, setPaginationState] = useRecoilState(paginationWithSearch)
+    const refreshDataProduct = useRecoilRefresher_UNSTABLE(dataProduct);
 
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -171,7 +176,30 @@ const ItemList = () => {
             multiFile:[],
         })
     }
+    
+    const onDelete = (values) => {
+        DeleteData(urlDeleteItem, values).then((value) =>
+            setNotif({
+                isOpen: true,
+                message: value.message,
+                type: value.status
+            }))
 
+        setConfirmDialog({
+            ...confirmDialog,
+            isOpen: false
+        })
+
+        refreshDataProduct()
+        setPaginationState({
+            ...paginationState,
+            search: ''
+        })
+    
+       
+    }
+
+    console.log("product",product)
     const renderTable = () => {
         return(
             <ProductTable>
@@ -285,6 +313,21 @@ const ItemList = () => {
                                 }}>
                                 <Icon color="primary">edit</Icon>
                             </IconButton>
+
+
+                            <IconButton
+                                color="primary"
+                                onClick={() => {
+                                    setConfirmDialog({
+                                        isOpen: true,
+                                        title: `Are you sure to delete ${product.name} ?`,
+                                        subTitle: "You can't undo this operation",
+                                        onConfirm: () => { onDelete(product) }
+                                    })
+                                }}
+                            >
+                                <DeleteIcon fontSize="small" />
+                            </IconButton>
                         </TableCell>
                     </TableRow>
                 ))}
@@ -347,6 +390,7 @@ const ItemList = () => {
                 <ItemForm />
             </controls.popup>
             <controls.Notification />
+            <controls.ConfirmDialog />
         </Container>
     )
 }

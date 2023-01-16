@@ -5,6 +5,7 @@ import { atom, DefaultValue, selector } from 'recoil'
 import { urlCategory, urlCreateCategory } from 'app/utils/constant'
 import { pagination } from './Pagination'
 import { PostData } from 'app/services/postData'
+import { reload } from './Controls'
 class CacheAPI {
     async getData() {
         let data 
@@ -24,7 +25,7 @@ const cacheApi = new CacheAPI()
 
 export const dataCategory = atom({
     key: 'dataCategory',
-    default: { id: '', name: '' }
+    default: { id: '', name: '', branch_id: '', branch: {id: 0, name:''} }
 })
 
 export const createDataCategory = atom({
@@ -46,6 +47,7 @@ export const dataHeadCall = atom({
     default:  [
         { id: 'ID', lable: 'SN', align: "left" },
         { id: 'Name', lable: 'Name', align: "left" },
+        { id: 'Branch', lable: 'Branch', align: "left" },
         { id: 'action', lable: 'Action', disableSorting: true, align: "center" },
     ]
 })
@@ -55,7 +57,7 @@ export const getDataCategory = selector({
 
     get: async ({get}) => {
         let category = null;
-        get(dataCategory)
+        get(reload)
         try {
             await GetData(urlCategory, pagination).then((value) =>
             category = { category: value }

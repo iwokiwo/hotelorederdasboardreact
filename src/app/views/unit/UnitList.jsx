@@ -11,6 +11,7 @@ import {
     Paper,
     InputAdornment,
     CardContent,
+    Autocomplete,
 } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { Paragraph, Span } from 'app/components/Typography'
@@ -33,7 +34,7 @@ import useTable from '../components/useTable'
 import { urlCreateUnit, urlDeleteUnit, urlUpdateUnit } from 'app/utils/constant'
 import { PutData } from 'app/services/putData'
 import { now } from 'moment/moment'
-import { getDataBranchs } from 'app/store/Branchs'
+import { getDataBranch, getDataBranchs } from 'app/store/Branchs'
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -76,6 +77,7 @@ const validationSchema = yup.object({
 const UnitList = () => {
     const classes = useStyles()
     const { unit } = useRecoilValue(getDataUnit)
+    const {branch} = useRecoilValue(getDataBranch)
     const [valuesSearch, setValuesSearch] = React.useState('');
     const [filterFn, setFilterFn] = React.useState({ fn: items => { return items; } });
     const [createState, setCreateState] = useRecoilState(dataUnit)
@@ -91,6 +93,7 @@ const UnitList = () => {
 
         { id: 'ID', lable: 'SN', align: "left" },
         { id: 'Name', lable: 'Name', align: "left" },
+        { id: 'Branch', lable: 'Branch', align: "left" },
         { id: 'action', lable: 'Action', disableSorting: true, align: "center" },
     ]
 
@@ -110,7 +113,10 @@ const UnitList = () => {
         onSubmit: (values) => {
             if (Number(values.id) === 0) {
                 //CreateData(values)
-                PostData(urlCreateUnit, values).then((value) =>
+                PostData(urlCreateUnit, {
+                    ...values,
+                    branch_id : values.branch.id
+                }).then((value) =>
                     setNotif({
                         isOpen: true,
                         message: value.message,
@@ -118,7 +124,10 @@ const UnitList = () => {
                     }))
 
             } else {
-                const data = PutData(urlUpdateUnit, values)
+                const data = PutData(urlUpdateUnit, {
+                    ...values,
+                    branch_id : values.branch.id
+                })
                 data.then((value) =>
                     setNotif({
                         isOpen: true,
@@ -199,13 +208,14 @@ const UnitList = () => {
                                         {row.ID}
                                     </TableCell>
                                     <TableCell align="left">{row.Name}</TableCell>
-
+                                    <TableCell align="left">{row.Branch.name}</TableCell>
                                     <TableCell align='center'>
                                         <controls.ActionButton
                                             color="primary"
-                                            onClick={() => {
+                                            onClick={(e, value) => {
                                                 formik.values.id = row.ID
                                                 formik.values.name = row.Name
+                                                formik.handleChange({ ...e, target: { name: 'branch', value: row.Branch } })
                                                 setPopupStates({
                                                     title: "Edit Unit",
                                                     openPopup: true,
@@ -276,6 +286,8 @@ const UnitList = () => {
                         }}
                         onChange={handleChange}
                     />
+
+                 
                     <Button color="primary" variant="contained" onClick={handleClickOpen}>
 
                         <Span sx={{ pl: 1, textTransform: 'capitalize' }}>
@@ -305,6 +317,34 @@ const UnitList = () => {
                                 onChange={formik.handleChange}
                                 error={formik.touched.name && Boolean(formik.errors.name)}
                                 helperText={formik.touched.name && formik.errors.name}
+                            />
+
+                            <Autocomplete
+                                id="branch"
+                                name="branch"
+                                value={formik.values.branch}
+                                onChange={(e, value) => {
+                                    if (value != null) {
+
+                                        formik.handleChange({ ...e, target: { name: 'branch', value: value } })
+
+                                    }
+                                }}
+                                options={branch.data}
+                                getOptionLabel={(option) => option ? option.name : []}
+                                isOptionEqualToValue={(option, value) => option.id === value.id}
+                                renderInput={params => (
+                                    <TextField
+                                        {...params}
+                                        margin="normal"
+                                        label="Branch"
+
+                                        fullWidth
+                                        name="branch"
+
+                                    />
+                                )}
+
                             />
 
                             <Box textAlign={"right"}>

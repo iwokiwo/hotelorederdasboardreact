@@ -22,9 +22,11 @@ export const dataItem = atom({
         description: "",
         sale_price: 0,
         category_id: 0,
+        branch_id:0,
         unit_id: 0,
         category: {ID: 0, Name:''},
         unit: {ID: 0, Name:''},
+        branch: {id: 0, name:''},
     },
 })
 

@@ -11,6 +11,7 @@ import {
     Paper,
     InputAdornment,
     CardContent,
+    Autocomplete,
 } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import { Box, styled, useTheme } from '@mui/system'
@@ -31,6 +32,7 @@ import controls from '../components'
 import useTable from '../components/useTable'
 import { urlCreateCategory, urlDeleteCategory, urlUpdateCategory } from 'app/utils/constant'
 import { isEmpty } from 'lodash'
+import { getDataBranch } from 'app/store/Branchs'
 
 
 const CardHeader = styled('div')(() => ({
@@ -77,6 +79,8 @@ const CategoryList = () => {
     const [filterFn, setFilterFn] = React.useState({ fn: items => { return items; } });
     //recoil
     const {category} = useRecoilValue(getDataCategory)
+    const {branch} = useRecoilValue(getDataBranch)
+    const [reloadState, setReloadState] = useRecoilState(reload)
     const [notif, setNotif] = useRecoilState(openMessage)
     const [confirmDialog, setConfirmDialog] = useRecoilState(confirmDialogState)
     const [popupStates, setPopupStates] = useRecoilState(popupState)
@@ -103,7 +107,10 @@ const CategoryList = () => {
         onSubmit: (values) => {
             if (Number(values.id) === 0) {
                 //CreateData(values)
-                PostData(urlCreateCategory, values).then((value) =>
+                PostData(urlCreateCategory, {
+                    ...values,
+                    branch_id : values.branch.id
+                }).then((value) =>
                     setNotif({
                         isOpen: true,
                         message: value.message,
@@ -114,7 +121,10 @@ const CategoryList = () => {
                 // console.log("createDataCategoryState",createDataCategoryState)
 
             } else {
-                const data = PutData(urlUpdateCategory, values)
+                const data = PutData(urlUpdateCategory, {
+                    ...values,
+                    branch_id : values.branch.id
+                })
                 data.then((value) =>
                     setNotif({
                         isOpen: true,
@@ -128,8 +138,8 @@ const CategoryList = () => {
                 ...popupStates,
                 openPopup: false
             })
-
-
+           // setDataCategoryState({...values})
+            setReloadState(now())
 
         },
     });
@@ -164,7 +174,8 @@ const CategoryList = () => {
             isOpen: false
         })
 
-        setDataCategoryState({...values})
+       // setDataCategoryState({...values})
+       setReloadState(now())
     }
 
     const RrenderTable = () => {
@@ -181,13 +192,14 @@ const CategoryList = () => {
                                         {row.ID}
                                     </TableCell>
                                     <TableCell align="left">{row.Name}</TableCell>
-
+                                    <TableCell align="left">{row.Branch.name}</TableCell>
                                     <TableCell align='center'>
                                         <controls.ActionButton
                                             color="primary"
-                                            onClick={() => {
+                                            onClick={(e,value) => {
                                                 formik.values.id = row.ID
                                                 formik.values.name = row.Name
+                                                formik.handleChange({ ...e, target: { name: 'branch', value: row.Branch } })
                                                 setPopupStates({
                                                     title: "Edit Unit",
                                                     openPopup: true,
@@ -239,6 +251,34 @@ const CategoryList = () => {
                                 error={formik.touched.name && Boolean(formik.errors.name)}
                                 helperText={formik.touched.name && formik.errors.name}
                             />
+
+                                <Autocomplete
+                                    id="branch"
+                                    name="branch"
+                                    value={formik.values.branch}
+                                    onChange={(e, value) => {
+                                        if (value != null) {
+
+                                            formik.handleChange({ ...e, target: { name: 'branch', value: value } })
+
+                                        }
+                                    }}
+                                    options={branch.data}
+                                    getOptionLabel={(option) => option ? option.name : []}
+                                    isOptionEqualToValue={(option, value) => option.id === value.id}
+                                    renderInput={params => (
+                                        <TextField
+                                            {...params}
+                                            margin="normal"
+                                            label="Branch"
+
+                                            fullWidth
+                                            name="branch"
+
+                                        />
+                                    )}
+
+                                />
 
                             <Box textAlign={"right"}>
                                 <Button color="primary" variant="text" type="submit" sx={{mt: 5}}>

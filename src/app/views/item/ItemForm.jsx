@@ -1,22 +1,18 @@
 import {Autocomplete, Button, Grid, Paper, TextField, Box, Tabs, Tab, Typography, IconButton, Alert} from "@mui/material";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
-import DeleteIcon from '@mui/icons-material/Delete';
-import ModeIcon from '@mui/icons-material/Mode';
 import PhotoIcon from '@mui/icons-material/Photo';
 import CreateIcon from '@mui/icons-material/Create';
 import CancelIcon from '@mui/icons-material/Cancel';
-import {Span} from "../../components/Typography";
-import PropTypes from 'prop-types';
 import {useRecoilState, useRecoilValue} from "recoil";
 import {useFormik} from "formik";
 import ImageUploading from "react-images-uploading";
+import * as yup from "yup";
 
 import {setDataItemFromik} from "../../store/Item";
 import React, {useEffect} from "react";
 import {getDataUnit} from "../../store/Unit";
 import {getDataCategory} from "../../store/Category";
-import * as yup from "yup";
+import { getDataBranch } from "app/store/Branchs";
 import {PostMultipartFormDataMultiFile} from "../../services/postData";
 import {urlCreateBranch, urlCreateItem, urlUpdateBranch, urlUpdateItem} from "../../utils/constant";
 import {PutMultipartFormDataMultiFile} from "../../services/putData";
@@ -42,6 +38,7 @@ const ItemForm = () => {
     const setData = useRecoilValue(setDataItemFromik)
     const { unit } = useRecoilValue(getDataUnit)
     const {category} = useRecoilValue(getDataCategory)
+    const {branch} = useRecoilValue(getDataBranch)
     const [notif, setNotif] = useRecoilState(openMessage)
     const [confirmDialog, setConfirmDialog] = useRecoilState(confirmDialogState)
     const [popupStates, setPopupStates] = useRecoilState(popupState)
@@ -77,7 +74,7 @@ const ItemForm = () => {
         const dataRemove = galleryTmp.filter(x => x.Filename !== item.Filename)
         setGalleryTmp(dataRemove)
       
-        console.log("alleryTmp.filter(x => x.Filename === item.Filename)",galleryTmp.filter(x => x.Filename === item.Filename))
+        //console.log("alleryTmp.filter(x => x.Filename === item.Filename)",galleryTmp.filter(x => x.Filename === item.Filename))
         uploadedFiles.push(galleryTmp.filter(x => x.Filename === item.Filename)[0].Filename)
         formik.values.multiFileDelete = uploadedFiles
     }
@@ -201,7 +198,8 @@ const ItemForm = () => {
                 PostMultipartFormDataMultiFile(urlCreateItem, {
                     ...values,
                     unit_id : values.unit.ID,
-                    category_id : values.category.ID
+                    category_id : values.category.ID,
+                    branch_id : values.branch.id
                 }).then((value) =>
                     setNotif({
                         isOpen: true,
@@ -214,7 +212,8 @@ const ItemForm = () => {
                 const data = PutMultipartFormDataMultiFile(urlUpdateItem, {
                     ...values,
                     unit_id : values.unit.ID,
-                    category_id : values.category.ID
+                    category_id : values.category.ID,
+                    branch_id : values.branch.id
                 })
               //  console.log("edit",values)
                 data.then((value) =>
@@ -316,6 +315,33 @@ const ItemForm = () => {
                                     helperText={formik.touched.sale_price && formik.errors.sale_price}
                                     sx={{ mt: 3.1 }}
                                 />
+                                <Autocomplete
+                                    id="branch"
+                                    name="branch"
+                                    value={formik.values.branch}
+                                    onChange={(e, value) => {
+                                        if (value != null) {
+
+                                            formik.handleChange({ ...e, target: { name: 'branch', value: value } })
+
+                                        }
+                                    }}
+                                    options={branch.data}
+                                    getOptionLabel={(option) => option ? option.name : []}
+                                    isOptionEqualToValue={(option, value) => option.id === value.id}
+                                    renderInput={params => (
+                                        <TextField
+                                            {...params}
+                                            margin="normal"
+                                            label="Branch"
+
+                                            fullWidth
+                                            name="branch"
+
+                                        />
+                                    )}
+
+                                />
                                 <TextField
                                     fullWidth
                                     id="description"
@@ -330,7 +356,7 @@ const ItemForm = () => {
                                         shrink: true,
                                     }}
                                     multiline
-                                    rows={4}
+                                    rows={2}
                                 />
 
 
@@ -413,7 +439,7 @@ const ItemForm = () => {
                                         p: 1,
                                         borderColor: 'lightgray',
                                         textAlign: 'center',
-                                        height: 115
+                                        height: 150
                                     }}>
                                     <Box sx={{ mt: 0.5, mb: 0.5, height: 50 }} textAlign="center">
 

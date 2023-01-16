@@ -45,7 +45,7 @@ import { pagination } from './Pagination'
 
 export const dataUnit = atom({
     key: 'dataUnit',
-    default: { id: '', name: '' }
+    default: { id: '', name: '',branch_id: '', branch: {id: 0, name:''}  }
 })
 
 export const getDataUnit = selector({

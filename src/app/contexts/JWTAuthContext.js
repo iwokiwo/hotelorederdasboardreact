@@ -132,6 +132,7 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         setSession(null)
         dispatch({ type: 'LOGOUT' })
+        window.location.reload(false);
     }
 
     useEffect(() => {

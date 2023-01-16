@@ -140,8 +140,8 @@ const BranchList = () => {
         if(branch.data.length > 1){
             setNotif({
                 isOpen: true,
-                message: "Branch have limit",
-                type: "error"
+                message: "You have a limit of branch additions",
+                type: "warning"
             })
             return
         }

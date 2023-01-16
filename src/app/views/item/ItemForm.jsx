@@ -433,20 +433,20 @@ const ItemForm = () => {
                                 />
                                 <Paper variant="outlined"
                                     sx={{
-                                        mt: 3.2,
+                                        mt: 2.2,
                                         borderRadius: 1,
                                         border: 1,
                                         p: 1,
                                         borderColor: 'lightgray',
                                         textAlign: 'center',
-                                        height: 150
+                                        height: 160
                                     }}>
-                                    <Box sx={{ mt: 0.5, mb: 0.5, height: 50 }} textAlign="center">
+                                    <Box sx={{ mt: 0.5, mb: 6.5, height: 50 }} textAlign="center">
 
                                         {imageUrl && selectedImage ? (
-                                            <img src={imageUrl} alt={selectedImage.name} height="50px" />
+                                            <img src={imageUrl} alt={selectedImage.name} height="100px" />
                                         ) :
-                                            (<img src={`${formik.values.url}${formik.values.path}${formik.values.thumbnail}`} height="50px" />)
+                                            (<img src={`${formik.values.url}${formik.values.path}${formik.values.thumbnail}`} height="100px" />)
                                         }
                                     </Box>
                                     <input

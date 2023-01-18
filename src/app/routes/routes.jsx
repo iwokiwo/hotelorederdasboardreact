@@ -10,6 +10,7 @@ import { Navigate } from 'react-router-dom'
 import CategoryRoutes from 'app/views/category/CategoryRoutes'
 import UnitRoutes from 'app/views/unit/UnitRoutes'
 import SettingRoutes from 'app/views/setting/SettingRoutes'
+import CrmRoutes from 'app/views/crm/CrmRoutes'
 
 export const AllPages = () => {
     const all_routes = [
@@ -24,6 +25,7 @@ export const AllPages = () => {
                 ...itemRoutes, 
                 ...CategoryRoutes,
                 ...UnitRoutes,
+                ...CrmRoutes,
                 ...SettingRoutes,
                 ...chartsRoute, 
                 ...materialRoutes],

@@ -4,6 +4,24 @@ export const navigations = [
         path: '/dashboard/default',
         icon: 'dashboard',
     },
+
+    {
+        name: 'CRM',
+        icon: 'face',
+        children: [
+            {
+                name: 'Coupon',
+                iconText: 'C',
+                path: '/crm/coupon-list',
+            },
+
+                     {
+                name: 'Icons',
+                path: '/material/icons',
+                iconText: 'I',
+            },
+        ]
+    },
  
     {
         name: 'Master Data',
@@ -11,17 +29,17 @@ export const navigations = [
         children: [
             {
                 name: 'Items',
-                iconText: 'SI',
+                iconText: 'ITS',
                 path: '/item/item-list',
             },
             {
                 name: 'Category',
-                iconText: 'SU',
+                iconText: 'C',
                 path: '/category/category-list',
             },
             {
                 name: 'Unit',
-                iconText: 'FP',
+                iconText: 'U',
                 path: '/unit/unit-list',
             },
             {

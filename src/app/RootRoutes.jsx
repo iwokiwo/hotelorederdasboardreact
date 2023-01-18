@@ -7,6 +7,7 @@ import itemRoutes from './views/item/ItemRoutes'
 import materialRoutes from './views/material-kit/MaterialRoutes'
 import UnitRoutes from './views/unit/UnitRoutes'
 import SettingRoutes from './views/setting/SettingRoutes'
+import CrmRoutes from './views/crm/CrmRoutes'
 
 const redirectRoute = [
     {
@@ -27,6 +28,7 @@ const routes = [
     ...itemRoutes,
     ...CategoryRoutes,
     ...UnitRoutes,
+    ...CrmRoutes,
     ...SettingRoutes,
     ...materialRoutes,
     ...chartsRoute,

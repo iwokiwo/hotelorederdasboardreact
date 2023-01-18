@@ -8,17 +8,30 @@ import { StyledEngineProvider } from '@mui/styled-engine'
 import { CssBaseline } from '@mui/material'
 import { RecoilRoot } from 'recoil'
 
-ReactDOM.render(
+// ReactDOM.render(
+//     <StyledEngineProvider injectFirst>
+//         <RecoilRoot>
+//         <BrowserRouter>
+//             <CssBaseline />
+//             <App />
+//         </BrowserRouter>
+//         </RecoilRoot>
+//     </StyledEngineProvider>,
+//     document.getElementById('root')
+// )
+
+const root = ReactDOM.createRoot(document.getElementById('root'))
+root.render(
     <StyledEngineProvider injectFirst>
-        <RecoilRoot>
-        <BrowserRouter>
-            <CssBaseline />
-            <App />
-        </BrowserRouter>
-        </RecoilRoot>
-    </StyledEngineProvider>,
-    document.getElementById('root')
+    <RecoilRoot>
+    <BrowserRouter>
+        <CssBaseline />
+        <App />
+    </BrowserRouter>
+    </RecoilRoot>
+</StyledEngineProvider>
 )
+
 
 // for IE-11 support un-comment cssVars() and it's import in this file
 // and in MatxTheme file

@@ -1,5 +1,6 @@
 import { GetData } from "app/services/getData";
 import { urlCoupon } from "app/utils/constant";
+import moment from "moment";
 import { atom, selector } from "recoil";
 import { reload } from "./Controls";
 import { pagination } from "./Pagination";
@@ -37,9 +38,9 @@ export const dataCoupon = atom({
         max_item: 0,
         min_item: 0,
         description: "",
-        valid_from: "2023-01-18T04:21:19.730Z",
-        valid_until: "2023-01-18T04:21:19.730Z",
-        active: 0,
+        valid_from: moment(),
+        valid_until: moment(),
+        active: true,
         limit: 10,
         use_limit: 0,
         branch_id: 10,

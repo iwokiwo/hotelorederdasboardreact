@@ -1,7 +1,7 @@
 import axios from 'axios.js'
 
 export async function GetData(url, param) {
-    console.log("param",param)
+    // console.log("param",url)
     const response = await axios.get(url, param, {
         headers: {
             'Content-Type': 'application/json',

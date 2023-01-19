@@ -4,7 +4,6 @@ import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles(theme =>({
      table: {
-         
          marginTop: theme.spacing(3),
          '& thead th':{         
              fontWeight: '600',
@@ -36,7 +35,7 @@ export default function useTable(records,headCells,filterFn) {
 
         </Table>
     )
-
+   // console.log("headCells",headCells)
     const TblHead = props => {
         const handleSortRequest = cellId=>{
             const isAsc = orderBy === cellId && order ==="asc";

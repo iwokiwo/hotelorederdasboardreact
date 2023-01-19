@@ -33,7 +33,7 @@ export let urlItem='/api/v1/item/searchAll'
 export let urlDeleteItem='/api/v1/item/delete/'
 
 //---------------------url Coupon-------------------------------
-export let urlCreateCoupon='/api/v1/item/create'
-export let urlUpdateCoupon='/api/v1/item/update'
-export let urlCoupon='/api/v1/item/searchAll'
-export let urlDeleteCoupon='/api/v1/item/delete/'
+export let urlCreateCoupon='/api/v1/coupon/create'
+export let urlUpdateCoupon='/api/v1/coupon/update'
+export let urlCoupon='/api/v1/coupon/searchAll'
+export let urlDeleteCoupon='/api/v1/coupon/delete/'

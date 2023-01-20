@@ -1,22 +1,25 @@
-import { Box, Button, Card, CardContent, InputAdornment, Paper, Table, TableBody, TableCell, TableRow } from '@mui/material'
+import { Box, Button, Card, CardContent, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, InputAdornment, Paper, Table, TableBody, TableCell, TableRow, Typography } from '@mui/material'
 import { styled, useTheme } from '@mui/system'
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { Breadcrumb } from 'app/components'
-import React from 'react'
+import React, { useEffect } from 'react'
+import CloseIcon from '@mui/icons-material/Close'
 
-import { isNil } from 'lodash'
+import { isEmpty, isNil } from 'lodash'
 
 import { Container, CardHeader, Small } from '../components/styleGlobal'
 import controls from '../components'
 import {  Span } from 'app/components/Typography'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useRecoilRefresher_UNSTABLE, useRecoilState, useRecoilValue } from 'recoil'
 import { dataHeadCallCoupons, getDataCoupon } from 'app/store/Coupon'
 import { confirmDialogState, openMessage, popupState, reload } from 'app/store/Controls'
 import useTable from '../components/useTable'
 import Moment from 'react-moment';
 import CouponForm from './CouponForm';
+import notif from '../components/notif';
+import { now } from 'moment';
 
-export default function CouponList() {
+const CouponList = () =>  {
     const { palette } = useTheme()
     const bgError = palette.error.main
     const bgPrimary = palette.primary.main
@@ -24,20 +27,23 @@ export default function CouponList() {
 
     const [valuesSearch, setValuesSearch] = React.useState('');
     const [filterFn, setFilterFn] = React.useState({ fn: items => { return items; } });
+    const [title, setTitle] = React.useState("")
+    
+    const [open, setOpen] = React.useState(false);
+    const [afterSave, setAfterSave] = React.useState(false)
 
     const headCall = useRecoilValue(dataHeadCallCoupons)
     const {coupon} = useRecoilValue(getDataCoupon)
-
     const [confirmDialog, setConfirmDialog] = useRecoilState(confirmDialogState)
     const [popupStates, setPopupStates] = useRecoilState(popupState)
+    const [reloadState, setReloadState] = useRecoilState(reload)
 
-   
-    const {
-        TblContainer,
-        TblHead,
-        TblPagination,
-        recordsAfterPagingAndSort
-    } = useTable(isNil(coupon) ? []: coupon.data, headCall, filterFn);
+    
+
+    console.log("coupon",coupon)
+    const handleClickOpens = () => {
+      setOpen(true);
+    };
 
     const handleClickOpen = () => {
         setPopupStates({
@@ -67,6 +73,24 @@ export default function CouponList() {
         //     multiFileDelete:[],
         //     multiFile:[],
         // })
+    }
+  
+    const handleClose = () => {
+      setOpen(false);
+    };
+
+   
+    const {
+        TblContainer,
+        TblHead,
+        TblPagination,
+        recordsAfterPagingAndSort
+    } = useTable(isNil(coupon) ? []: coupon.data, headCall, filterFn);
+
+    const handleChange = (e) => {
+        let target = e.target;
+        setValuesSearch({ valuesSearch: target.value });
+
     }
 
     const renderTable = () => {
@@ -110,12 +134,8 @@ export default function CouponList() {
                                         <controls.ActionButton
                                             color="primary"
                                             onClick={() => {
-
-                                                setPopupStates({
-                                                    title: "Edit Branch",
-                                                    openPopup: true,
-                                                    size: "sm"
-                                                })
+                                                setTitle("Edit Coupon")
+                                                handleClickOpens()
                                             }}
                                         >
                                             <EditOutlinedIcon fontSize="small" />
@@ -130,6 +150,70 @@ export default function CouponList() {
             </Box>
         )
     }
+
+    // const renderForm = () => {
+    //     return (
+    //         <Dialog
+    //             open={open}
+    //             onClose={handleClose}
+    //             maxWidth="md"
+    //             aria-labelledby="alert-dialog-title"
+    //             aria-describedby="alert-dialog-description"
+    //         >
+    //             <DialogTitle id="alert-dialog-title">
+    //                 <div style={{ display: 'flex' }}>
+    //                     <Typography variant="h6" component="div" style={{ flexGrow: 1, mt: -1 }}
+    //                     >   {title}</Typography>
+    //                     <controls.ActionButton
+    //                         color="secondary"
+    //                         onClick={() => handleClose()}
+    //                     >
+    //                         <CloseIcon fontSize={"small"} sx={{ mt: 0 }} />
+    //                     </controls.ActionButton>
+    //                 </div>
+
+    //             </DialogTitle>
+    //             <DialogContent>
+    //                 <DialogContentText id="alert-dialog-description">
+    //                     <Box sx={{p: 3}}>
+    //                     <CouponForm setAfterSave={setAfterSave} />
+    //                     </Box>
+                        
+    //                 </DialogContentText>
+    //             </DialogContent>
+    //             {/* <DialogActions>
+    //           <Button onClick={handleClose}>Disagree</Button>
+    //           <Button onClick={handleClose} autoFocus>
+    //             Agree
+    //           </Button>
+    //         </DialogActions> */}
+    //         </Dialog>
+    //     )
+    // }
+
+    useEffect(() => {
+        setFilterFn({
+            fn: items => {
+                if (isEmpty(valuesSearch.valuesSearch)) {
+                    return items = coupon.data
+                }
+                else {
+                    return items = coupon.data.filter(x => x.name.toUpperCase().includes(valuesSearch.valuesSearch.toUpperCase()));
+                }
+            }
+        })
+    }, [valuesSearch, notif])
+
+    useEffect(() => {
+        console.log("afterSave", afterSave)
+        if (afterSave == true) {
+            // setReloadState(now())
+            setAfterSave(false)
+            setFilterFn({
+                fn: items => { return items = coupon.data }
+            })
+        }
+    }, [afterSave]);
 
     return (
         <Container>
@@ -150,11 +234,14 @@ export default function CouponList() {
                             startAdornment: (<InputAdornment position="start">
                             </InputAdornment>)
                         }}
-                    // onChange={handleChange}
+                     onChange={handleChange}
                     />
 
 
-                    <Button color="primary" variant="contained" onClick={handleClickOpen}>
+                    <Button color="primary" variant="contained" onClick={() => {
+                        setTitle("Add Coupon")
+                        handleClickOpen()
+                    }}>
 
                         <Span sx={{ pl: 1, textTransform: 'capitalize' }}>
                             Add Coupon
@@ -165,12 +252,14 @@ export default function CouponList() {
                     {renderTable()}
                 </CardContent>
             </Card>
-
-            <controls.popup>
-                <CouponForm />
-            </controls.popup>
             <controls.Notification />
             <controls.ConfirmDialog />
+            <controls.popup>
+                <CouponForm setAfterSave={setAfterSave} />
+            </controls.popup>
+
+            {/* {renderForm()} */}
         </Container>
     )
 }
+export default CouponList

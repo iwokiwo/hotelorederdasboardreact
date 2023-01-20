@@ -2,7 +2,7 @@ import { GetData } from "app/services/getData";
 import { urlCoupon } from "app/utils/constant";
 import moment from "moment";
 import { atom, selector } from "recoil";
-import { reload } from "./Controls";
+import { openMessage, reload } from "./Controls";
 import { pagination } from "./Pagination";
 
 export const dataHeadCallCoupons = atom({
@@ -29,10 +29,10 @@ export const dataDiscountType = atom({
 export const dataCoupon = atom({
     key: 'dataCoupon',
     default: {
-        id: 2,
-        name: "discon 21",
-        discount_type: "",
-        discount: 21,
+        id: 0,
+        name: "",
+        discount_type: "persen",
+        discount: 0,
         max_value: 0,
         min_value: 0,
         max_item: 0,
@@ -40,10 +40,10 @@ export const dataCoupon = atom({
         description: "",
         valid_from: moment(),
         valid_until: moment(),
-        active: true,
-        limit: 10,
+        active: 1,
+        limit: 0,
         use_limit: 0,
-        branch_id: 10,
+        branch_id: 0,
         branch: {id: 0, name:''} 
     },
 })
@@ -61,8 +61,7 @@ export const getDataCoupon = selector({
 
     get: async ({get}) => {
 
-        let coupon = [];
-
+        let coupon = null;
         get(reload)
         try {
             await GetData(urlCoupon, pagination).then((value) =>
@@ -71,7 +70,7 @@ export const getDataCoupon = selector({
         } catch (error) {
             coupon=  {coupon: []}
         }
-
+        console.log("coupon", coupon)
         return coupon
     }
 })

@@ -1,10 +1,10 @@
 import { Autocomplete, Box, Button, Grid, Switch, TextField, Typography } from '@mui/material';
 import { getDataBranch } from 'app/store/Branchs';
-import { confirmDialogState, openMessage, popupState, reload } from 'app/store/Controls';
-import { dataDiscountType, setDataCouponFromik } from 'app/store/Coupon'
-import { Formik, useFormik } from 'formik'
+import { openMessage, popupState, reload } from 'app/store/Controls';
+import { dataDiscountType, getDataCoupon, setDataCouponFromik } from 'app/store/Coupon'
+import { useFormik } from 'formik'
 import React from 'react'
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilRefresher_UNSTABLE, useRecoilState, useRecoilValue } from 'recoil';
 
 import * as yup from "yup";
 
@@ -12,16 +12,23 @@ import { DatePicker, TimePicker } from '@mui/lab'
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider'
 import moment from 'moment/moment';
+import { urlCreateCoupon, urlUpdateCoupon } from 'app/utils/constant';
+import { PostData } from 'app/services/postData';
+import { PutData } from 'app/services/putData';
+import { now } from 'lodash';
 
 
 const validationSchema = yup.object({
     name: yup
         .string('Enter Name ')
         .required('Name is required'),
+ 
 
 });
 
-const CouponForm = () => {
+const CouponForm = (props) => {
+    
+    const { afterSave, setAfterSave } = props;
 
     const setData = useRecoilValue(setDataCouponFromik)
     const { branch } = useRecoilValue(getDataBranch)
@@ -30,9 +37,9 @@ const CouponForm = () => {
     const [checked, setChecked] = React.useState(true);
 
     const [notif, setNotif] = useRecoilState(openMessage)
-    const [confirmDialog, setConfirmDialog] = useRecoilState(confirmDialogState)
     const [popupStates, setPopupStates] = useRecoilState(popupState)
     const [reloadState, setReloadState] = useRecoilState(reload)
+    const refreshGetDataCoupon = useRecoilRefresher_UNSTABLE(getDataCoupon);
 
     const [selectedDateFrom, setSelectedDateFrom] = React.useState(
         moment()
@@ -51,30 +58,79 @@ const CouponForm = () => {
         formik.values.valid_until = date
     }
 
+    const handleChange = (event) => {
+        setChecked(event.target.checked);
+        formik.values.active = event.target.checked === true ? 1:0
+      };
+
     const formik = useFormik({
         initialValues: {
             ...setData
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
-            console.log("add", values)
+           // console.log(Number(values.limit))
+            if (Number(values.id) === 0) {
+              
+                PostData(urlCreateCoupon, {
+                    ...values,
+                    branch_id : values.branch.id,
+                    limit: Number(values.limit),
+                    discount: Number(values.discount),
+                    max_value: Number(values.max_value),
+                    min_value: Number(values.min_value),
+                    max_item: Number(values.max_item),
+                    min_item: Number(values.min_item)
+                }).then((value) => 
+                    setNotif({
+                        isOpen: true,
+                        message: value.message,
+                        type: value.status
+                    })
+                    
+                    )
+                 
+                
 
+            } else {
+                const data = PutData(urlUpdateCoupon, {
+                    ...values,
+                    branch_id : values.branch.id,
+                    limit: Number(values.limit),
+                    discount: Number(values.discount),
+                    max_value: Number(values.max_value),
+                    min_value: Number(values.min_value),
+                    max_item: Number(values.max_item),
+                    min_item: Number(values.min_item)
+                })
+                data.then((value) =>
+                    setNotif({
+                        isOpen: true,
+                        message: value.message,
+                        type: value.status
+                    }))
 
-
+            }
+           
+           refreshGetDataCoupon()
+           setReloadState(now())
+           //refreshGetDataCoupon()
+           setAfterSave(true)
+           // this.props.setAfterSave(true)
+           setPopupStates({
+               ...popupStates,
+               openPopup: false
+           })
         },
     })
 
-    const handleChange = (event) => {
-        setChecked(event.target.checked);
-        formik.values.active = event.target.checked
-      };
-
-    console.log("tes", formik.values.discount_type)
     return (
-        <div>
-             <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <>
+             
             <form onSubmit={formik.handleSubmit}>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <Box>
+              
                     <Grid container spacing={3}>
                     <Grid item lg={6} md={6} sm={12} xs={12} sx={{ mt: 2 }}>
                             <DatePicker
@@ -112,7 +168,7 @@ const CouponForm = () => {
                                 fullWidth
                                 id="name"
                                 name="name"
-                                label="Name"
+                                label="Name / Code Coupon"
                                 value={formik.values.name}
                                 onChange={formik.handleChange}
                                 error={formik.touched.name && Boolean(formik.errors.name)}
@@ -309,7 +365,7 @@ const CouponForm = () => {
                                 value={formik.values.branch}
                                 onChange={(e, value) => {
                                     if (value != null) {
-
+                                        console.log("value",value)
                                         formik.handleChange({ ...e, target: { name: 'branch', value: value } })
 
                                     }
@@ -373,11 +429,12 @@ const CouponForm = () => {
                         <Typography variant="button" display="block"> Submit</Typography>
 
                     </Button>
+                    
                 </Box>
-       
+                </LocalizationProvider>
             </form>
-            </LocalizationProvider>
-        </div>
+          
+        </>
     )
 }
 export default CouponForm

@@ -3,7 +3,7 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import PhotoIcon from '@mui/icons-material/Photo';
 import CreateIcon from '@mui/icons-material/Create';
 import CancelIcon from '@mui/icons-material/Cancel';
-import {useRecoilState, useRecoilValue} from "recoil";
+import {useRecoilRefresher_UNSTABLE, useRecoilState, useRecoilValue} from "recoil";
 import {useFormik} from "formik";
 import ImageUploading from "react-images-uploading";
 import * as yup from "yup";
@@ -20,6 +20,7 @@ import {now} from "moment";
 import {confirmDialogState, openMessage, popupState, reload} from "../../store/Controls";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { remove } from "lodash";
+import { dataProduct } from "app/store";
 
 const validationSchema = yup.object({
     name: yup
@@ -31,7 +32,8 @@ const validationSchema = yup.object({
 const MAX_COUNT = 5;
 
 
-const ItemForm = () => {
+const ItemForm = (props) => {
+    const { afterSave, setAfterSave } = props;
     const [selectedImage, setSelectedImage] = React.useState(null);
     const [imageUrl, setImageUrl] = React.useState(null);
 
@@ -43,12 +45,14 @@ const ItemForm = () => {
     const [confirmDialog, setConfirmDialog] = useRecoilState(confirmDialogState)
     const [popupStates, setPopupStates] = useRecoilState(popupState)
     const [reloadState, setReloadState] = useRecoilState(reload)
+    const refreshDataProduct = useRecoilRefresher_UNSTABLE(dataProduct);
 
     const [valueTab, setValueTab] = React.useState("1")
     const [images, setImages] = React.useState([]);
     const [uploadImages, setUploadImages] = React.useState([]);
     const [uploadedFiles, setUploadedFiles] = React.useState([])
     const [galleryTmp, setGalleryTmp] = React.useState([])
+    const [ afterSaveForm, setAfterSaveForm ] = React.useState(false);
   
     const maxNumber = 69;
     const maxFileSize = 300000
@@ -192,49 +196,54 @@ const ItemForm = () => {
         validationSchema: validationSchema,
         onSubmit: (values) => {
           //  console.log("add",values)
-            
-            if (Number(values.id) === 0) {
-                //CreateData(values)
-                PostMultipartFormDataMultiFile(urlCreateItem, {
-                    ...values,
-                    unit_id : values.unit.ID,
-                    category_id : values.category.ID,
-                    branch_id : values.branch.id
-                }).then((value) =>
-                    setNotif({
-                        isOpen: true,
-                        message: value.message,
-                        type: value.status
-                    }))
-
-            } else {
-
-                const data = PutMultipartFormDataMultiFile(urlUpdateItem, {
-                    ...values,
-                    unit_id : values.unit.ID,
-                    category_id : values.category.ID,
-                    branch_id : values.branch.id
-                })
-              //  console.log("edit",values)
-                data.then((value) =>
-                    setNotif({
-                        isOpen: true,
-                        message: value.message,
-                        type: value.status
-                    }))
-
-            }
-
-            setPopupStates({
-                ...popupStates,
-                openPopup: false
-            })
-
-            setReloadState(now())
-
-
+          saveData(values)
+          
         },
     })
+
+
+    const saveData = (values) =>{
+
+       
+        if (Number(values.id) === 0) {
+            //CreateData(values)
+           
+            PostMultipartFormDataMultiFile(urlCreateItem, {
+                ...values,
+                unit_id : values.unit.ID,
+                category_id : values.category.ID,
+                branch_id : values.branch.id
+            }).then((value) =>{
+              
+                setNotif({
+                    isOpen: true,
+                    message: value.message,
+                    type: value.status
+                })})
+
+        } else {
+
+            const data = PutMultipartFormDataMultiFile(urlUpdateItem, {
+                ...values,
+                unit_id : values.unit.ID,
+                category_id : values.category.ID,
+                branch_id : values.branch.id
+            })
+
+            data.then((value) =>{
+
+                setNotif({
+                    isOpen: true,
+                    message: value.message,
+                    type: value.status
+                })})
+              
+        }
+
+       formik.values.multiFile =[]
+        setAfterSave(true)
+        setAfterSaveForm(true)
+    }
 
     useEffect(() => {
         // if(selectedImage.size > 300000){
@@ -482,6 +491,20 @@ const ItemForm = () => {
                 
                 </TabContext>
                 <Box textAlign={"right"}>
+                    {afterSaveForm === true &&
+                        <Button color="primary" variant="text" sx={{ mt: 5 }} onClick={() =>
+                            setPopupStates({
+                                ...popupStates,
+                                openPopup: false
+                            })
+                        }>
+                            {/* <Icon>send</Icon> */}
+
+                            <Typography variant="button" display="block"> Close</Typography>
+
+                        </Button>
+                    }
+                
                     <Button color="primary" variant="text" type="submit" sx={{ mt: 5 }}>
                         {/* <Icon>send</Icon> */}
                       

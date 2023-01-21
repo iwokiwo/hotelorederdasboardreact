@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {
     Table,
     TableHead,
@@ -107,6 +107,7 @@ const ItemList = () => {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [search, setSearch] = React.useState('')
+    const [afterSave, setAfterSave] = React.useState(false)
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -180,25 +181,19 @@ const ItemList = () => {
     }
     
     const onDelete = (values) => {
-        DeleteData(urlDeleteItem, values).then((value) =>
+        DeleteData(urlDeleteItem, values).then((value) => {
             setNotif({
                 isOpen: true,
                 message: value.message,
                 type: value.status
-            }))
-
-        setConfirmDialog({
-            ...confirmDialog,
-            isOpen: false
+            })
+            //refreshDataProduct()
+            setPaginationState({
+                ...paginationState,
+                search: ''
+            })
         })
 
-        refreshDataProduct()
-        setPaginationState({
-            ...paginationState,
-            search: ''
-        })
-    
-       
     }
 
     const renderTable = () => {
@@ -323,7 +318,13 @@ const ItemList = () => {
                                         isOpen: true,
                                         title: `Are you sure to delete ${product.name} ?`,
                                         subTitle: "You can't undo this operation",
-                                        onConfirm: () => { onDelete(product) }
+                                        onConfirm: () => { 
+                                            setConfirmDialog({
+                                                ...confirmDialog,
+                                                isOpen: false
+                                            })
+                                            onDelete(product) 
+                                        }
                                     })
                                 }}
                             >
@@ -336,6 +337,20 @@ const ItemList = () => {
         </ProductTable>
         )
     }
+
+    useEffect(() => {
+       
+        if (afterSave == true) {
+          
+            setAfterSave(false)
+           // refreshDataProduct()
+            setPaginationState({
+                ...paginationState,
+                search: ''
+            })
+        }
+    }, [afterSave]);
+
 
 
     return (
@@ -388,7 +403,7 @@ const ItemList = () => {
             </Box>
         </Card>
             <controls.popup>
-                <ItemForm />
+                <ItemForm setAfterSave= {setAfterSave}/>
             </controls.popup>
             <controls.Notification />
             <controls.ConfirmDialog />

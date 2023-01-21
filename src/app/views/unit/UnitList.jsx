@@ -12,6 +12,7 @@ import {
     InputAdornment,
     CardContent,
     Autocomplete,
+    Typography,
 } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { Paragraph, Span } from 'app/components/Typography'
@@ -20,7 +21,7 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteIcon from '@mui/icons-material/DeleteOutline';
 
 import { Breadcrumb, SimpleCard } from 'app/components'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useRecoilRefresher_UNSTABLE, useRecoilState, useRecoilValue } from 'recoil'
 import * as yup from 'yup';
 import { useFormik } from 'formik'
 
@@ -76,6 +77,7 @@ const validationSchema = yup.object({
 
 const UnitList = () => {
     const classes = useStyles()
+    const [ afterSaveForm, setAfterSaveForm ] = React.useState(false);
     const { unit } = useRecoilValue(getDataUnit)
     const {branch} = useRecoilValue(getDataBranch)
     const [valuesSearch, setValuesSearch] = React.useState('');
@@ -86,6 +88,7 @@ const UnitList = () => {
     const [confirmDialog, setConfirmDialog] = useRecoilState(confirmDialogState)
     const [popupStates, setPopupStates] = useRecoilState(popupState)
     const [reloadState, setReloadState] = useRecoilState(reload)
+    const refreshData = useRecoilRefresher_UNSTABLE(getDataUnit);
 
     const [paginationState, setPaginationState] = useRecoilState(pagination)
 
@@ -111,39 +114,50 @@ const UnitList = () => {
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
+
+            // setPopupStates({
+            //     ...popupStates,
+            //     openPopup: false
+            // })
+
             if (Number(values.id) === 0) {
                 //CreateData(values)
                 PostData(urlCreateUnit, {
                     ...values,
                     branch_id : values.branch.id
-                }).then((value) =>
+                }).then((value) =>{
+                    
                     setNotif({
                         isOpen: true,
                         message: value.message,
                         type: value.status
-                    }))
+                    })
+                    refreshData()
+                })
 
             } else {
                 const data = PutData(urlUpdateUnit, {
                     ...values,
                     branch_id : values.branch.id
                 })
-                data.then((value) =>
+                data.then((value) =>{
+                    
                     setNotif({
                         isOpen: true,
                         message: value.message,
                         type: value.status
-                    }))
+                    })
+                    refreshData()
+                })
 
             }
 
-            setPopupStates({
-                ...popupStates,
-                openPopup: false
+          
+
+            setAfterSaveForm(true)
+            setFilterFn({
+                fn: items => { return items = unit.data }
             })
-
-            setReloadState(now())
-
 
         },
     });
@@ -190,8 +204,12 @@ const UnitList = () => {
             ...confirmDialog,
             isOpen: false
         })
-        setReloadState(now())
-
+        //setReloadState(now())
+        refreshData()
+        // setReloadState(now())
+        setFilterFn({
+            fn: items => { return items = unit.data }
+        })
     }
 
     const RrenderTable = () => {
@@ -348,10 +366,23 @@ const UnitList = () => {
                             />
 
                             <Box textAlign={"right"}>
-                                <Button color="primary" variant="text" type="submit" sx={{mt: 5}}>
+                                {afterSaveForm === true &&
+                                    <Button color="primary" variant="text" sx={{ mt: 5 }} onClick={() =>
+                                        setPopupStates({
+                                            ...popupStates,
+                                            openPopup: false
+                                        })
+                                    }>
+                                        {/* <Icon>send</Icon> */}
+                                        <Span sx={{ textTransform: 'capitalize' }}>
+                                            <Typography variant="button" display="block"> Close</Typography>
+                                        </Span>
+                                    </Button>
+                                }
+                                <Button color="primary" variant="text" type="submit" sx={{ mt: 5 }}>
                                     {/* <Icon>send</Icon> */}
                                     <Span sx={{ textTransform: 'capitalize' }}>
-                                        Submit
+                                        <Typography variant="button" display="block">Submit</Typography>
                                     </Span>
                                 </Button>
                             </Box>

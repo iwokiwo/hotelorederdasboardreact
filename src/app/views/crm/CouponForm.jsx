@@ -29,6 +29,7 @@ const validationSchema = yup.object({
 const CouponForm = (props) => {
     
     const { afterSave, setAfterSave } = props;
+    const [ afterSaveForm, setAfterSaveForm ] = React.useState(false);
 
     const setData = useRecoilValue(setDataCouponFromik)
     const { branch } = useRecoilValue(getDataBranch)
@@ -81,13 +82,15 @@ const CouponForm = (props) => {
                     min_value: Number(values.min_value),
                     max_item: Number(values.max_item),
                     min_item: Number(values.min_item)
-                }).then((value) => 
+                }).then((value) => {
+                    refreshGetDataCoupon()
+
                     setNotif({
                         isOpen: true,
                         message: value.message,
                         type: value.status
                     })
-                    
+                }
                     )
                  
                 
@@ -103,24 +106,22 @@ const CouponForm = (props) => {
                     max_item: Number(values.max_item),
                     min_item: Number(values.min_item)
                 })
-                data.then((value) =>
+                data.then((value) =>{
+                    refreshGetDataCoupon()
                     setNotif({
                         isOpen: true,
                         message: value.message,
                         type: value.status
-                    }))
+                    })})
 
             }
            
-           refreshGetDataCoupon()
-           setReloadState(now())
-           //refreshGetDataCoupon()
+         
+        //    setReloadState(now())
+
            setAfterSave(true)
-           // this.props.setAfterSave(true)
-           setPopupStates({
-               ...popupStates,
-               openPopup: false
-           })
+           setAfterSaveForm(true)
+
         },
     })
 
@@ -423,6 +424,19 @@ const CouponForm = (props) => {
                 </Box>
              
                 <Box textAlign={"right"}>
+                {afterSaveForm === true &&
+                        <Button color="primary" variant="text" sx={{ mt: 5 }} onClick={() =>
+                            setPopupStates({
+                                ...popupStates,
+                                openPopup: false
+                            })
+                        }>
+                            {/* <Icon>send</Icon> */}
+
+                            <Typography variant="button" display="block"> Close</Typography>
+
+                        </Button>
+                    }
                     <Button color="primary" variant="text" type="submit" sx={{ mt: 5 }}>
                         {/* <Icon>send</Icon> */}
 

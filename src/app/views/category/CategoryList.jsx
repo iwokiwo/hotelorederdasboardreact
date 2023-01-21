@@ -12,11 +12,12 @@ import {
     InputAdornment,
     CardContent,
     Autocomplete,
+    Typography,
 } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import { Box, styled, useTheme } from '@mui/system'
 import { Breadcrumb, SimpleCard } from 'app/components'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useRecoilRefresher_UNSTABLE, useRecoilState, useRecoilValue } from 'recoil'
 import { Paragraph, Span } from 'app/components/Typography'
 import * as yup from 'yup';
 import { useFormik } from 'formik'
@@ -73,7 +74,7 @@ const validationSchema = yup.object({
 
 const CategoryList = () => {
     const navigate = useNavigate()
-
+    const [ afterSaveForm, setAfterSaveForm ] = React.useState(false);
     const [valuesSearch, setValuesSearch] = React.useState('');
     //componen variable
     const [filterFn, setFilterFn] = React.useState({ fn: items => { return items; } });
@@ -88,6 +89,7 @@ const CategoryList = () => {
     const [dataCategoryStates,setDataCategoryStates] = useRecoilState(getDataCategorys)
     const [createDataCategoryState,setCreateDataCategoryState]= useRecoilState(createDataCategory)
     const headCall = useRecoilValue(dataHeadCall)
+    const refreshData = useRecoilRefresher_UNSTABLE(getDataCategory);
 
     //  console.log("dataCategoryStates",dataCategoryStates)
     //  console.log("category",category)
@@ -110,14 +112,15 @@ const CategoryList = () => {
                 PostData(urlCreateCategory, {
                     ...values,
                     branch_id : values.branch.id
-                }).then((value) =>
+                }).then((value) =>{
+                    refreshData()
                     setNotif({
                         isOpen: true,
                         message: value.message,
                         type: value.status
-                    }))
+                    })})
 
-                    setDataCategoryState({...values})
+               
                 // console.log("createDataCategoryState",createDataCategoryState)
 
             } else {
@@ -125,21 +128,20 @@ const CategoryList = () => {
                     ...values,
                     branch_id : values.branch.id
                 })
-                data.then((value) =>
+                data.then((value) =>{
+                refreshData()
+
                     setNotif({
                         isOpen: true,
                         message: value.message,
                         type: value.status
-                    }))
-
+                    })})
+                 
             }
-
-            setPopupStates({
-                ...popupStates,
-                openPopup: false
+            setAfterSaveForm(true)
+            setFilterFn({
+                fn: items => { return items = category.data }
             })
-           // setDataCategoryState({...values})
-            setReloadState(now())
 
         },
     });
@@ -175,7 +177,11 @@ const CategoryList = () => {
         })
 
        // setDataCategoryState({...values})
-       setReloadState(now())
+    //    setReloadState(now())
+       refreshData()
+       setFilterFn({
+        fn: items => { return items = category.data }
+    })
     }
 
     const RrenderTable = () => {
@@ -281,10 +287,23 @@ const CategoryList = () => {
                                 />
 
                             <Box textAlign={"right"}>
+                                    {afterSaveForm === true &&
+                                        <Button color="primary" variant="text" sx={{ mt: 5 }} onClick={() =>
+                                            setPopupStates({
+                                                ...popupStates,
+                                                openPopup: false
+                                            })
+                                        }>
+                                            {/* <Icon>send</Icon> */}
+                                            <Span sx={{ textTransform: 'capitalize' }}>
+                                            <Typography variant="button" display="block"> Close</Typography>
+                                            </Span>
+                                        </Button>
+                                    }
                                 <Button color="primary" variant="text" type="submit" sx={{mt: 5}}>
                                     {/* <Icon>send</Icon> */}
                                     <Span sx={{ textTransform: 'capitalize' }}>
-                                        Submit
+                                    <Typography variant="button" display="block">Submit</Typography>
                                     </Span>
                                 </Button>
                             </Box>

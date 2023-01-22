@@ -35,21 +35,22 @@ const CouponForm = (props) => {
     const { branch } = useRecoilValue(getDataBranch)
     const discountType = useRecoilValue(dataDiscountType)
 
-    const [checked, setChecked] = React.useState(true);
+    const [checked, setChecked] = React.useState(setData.active === 1 ? true:false);
 
     const [notif, setNotif] = useRecoilState(openMessage)
     const [popupStates, setPopupStates] = useRecoilState(popupState)
     const [reloadState, setReloadState] = useRecoilState(reload)
-    const refreshGetDataCoupon = useRecoilRefresher_UNSTABLE(getDataCoupon);
+    
 
     const [selectedDateFrom, setSelectedDateFrom] = React.useState(
-        moment()
+        moment(setData.valid_from)
     )
     const [selectedDateUnitl, setSelectedDateUntil] = React.useState(
-        moment()
+        moment(setData.valid_until)
     )
 
     const  handleDateChangeFrom = (date) => {
+        
         setSelectedDateFrom(date)
         formik.values.valid_from = date
     }
@@ -66,7 +67,8 @@ const CouponForm = (props) => {
 
     const formik = useFormik({
         initialValues: {
-            ...setData
+            ...setData,
+            active: setData.active === true ? 1: 0
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
@@ -83,7 +85,7 @@ const CouponForm = (props) => {
                     max_item: Number(values.max_item),
                     min_item: Number(values.min_item)
                 }).then((value) => {
-                    refreshGetDataCoupon()
+                   // refreshGetDataCoupon()
 
                     setNotif({
                         isOpen: true,
@@ -107,7 +109,7 @@ const CouponForm = (props) => {
                     min_item: Number(values.min_item)
                 })
                 data.then((value) =>{
-                    refreshGetDataCoupon()
+                   // refreshGetDataCoupon()
                     setNotif({
                         isOpen: true,
                         message: value.message,
@@ -137,6 +139,7 @@ const CouponForm = (props) => {
                             <DatePicker
                                 value={selectedDateFrom}
                                 onChange={handleDateChangeFrom}
+                                inputFormat="yyyy/MM/dd"
                                 renderInput={(props) => (
                                     <TextField
                                         {...props}
@@ -153,6 +156,7 @@ const CouponForm = (props) => {
                         <DatePicker
                                 value={selectedDateUnitl}
                                 onChange={handleDateChangeUntil}
+                                inputFormat="yyyy/MM/dd"
                                 renderInput={(props) => (
                                     <TextField
                                         {...props}
@@ -412,6 +416,7 @@ const CouponForm = (props) => {
                         <Typography>Active</Typography>
                             <Switch
                                 checked={checked}
+                              
                                 onChange={handleChange}
                                 inputProps={{ 'aria-label': 'controlled' }}
                             />

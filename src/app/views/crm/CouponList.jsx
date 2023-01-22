@@ -11,13 +11,13 @@ import { Container, CardHeader, Small } from '../components/styleGlobal'
 import controls from '../components'
 import {  Span } from 'app/components/Typography'
 import { useRecoilRefresher_UNSTABLE, useRecoilState, useRecoilValue } from 'recoil'
-import { dataHeadCallCoupons, getDataCoupon } from 'app/store/Coupon'
+import { dataCoupon, dataHeadCallCoupons, getDataCoupon } from 'app/store/Coupon'
 import { confirmDialogState, openMessage, popupState, reload } from 'app/store/Controls'
 import useTable from '../components/useTable'
 import Moment from 'react-moment';
 import CouponForm from './CouponForm';
 import notif from '../components/notif';
-import { now } from 'moment';
+import moment, { now } from 'moment';
 
 const CouponList = () =>  {
     const { palette } = useTheme()
@@ -37,6 +37,8 @@ const CouponList = () =>  {
     const [confirmDialog, setConfirmDialog] = useRecoilState(confirmDialogState)
     const [popupStates, setPopupStates] = useRecoilState(popupState)
     const [reloadState, setReloadState] = useRecoilState(reload)
+    const [dataItemState, setDataItemState] = useRecoilState(dataCoupon)
+    const refreshGetDataCoupon = useRecoilRefresher_UNSTABLE(getDataCoupon);
 
     
 
@@ -51,28 +53,24 @@ const CouponList = () =>  {
             openPopup: true,
             size: "md"
         })
-        // setDataItemState({
-        //     id: 0,
-        //     name: "",
-        //     thumbnail: "",
-        //     thumbnailOld: "",
-        //     url:"",
-        //     path:"",
-        //     price: 0,
-        //     quantity: 0,
-        //     active: 1,
-        //     description: "",
-        //     sale_price: 0,
-        //     category_id: 0,
-        //     unit_id: 0,
-        //     branch_id:0,
-        //     category: {ID: 0, Name:''},
-        //     unit: {ID: 0, Name:''},
-        //     branch: {id: 0, name:''},
-        //     gallery:[],
-        //     multiFileDelete:[],
-        //     multiFile:[],
-        // })
+        setDataItemState({
+            id: 0,
+            name: "",
+            discount_type: "persen",
+            discount: 0,
+            max_value: 0,
+            min_value: 0,
+            max_item: 0,
+            min_item: 0,
+            description: "",
+            valid_from: moment(),
+            valid_until: moment(),
+            active: 1,
+            limit: 0,
+            use_limit: 0,
+            branch_id: 0,
+            branch: { id: 0, name: '' }
+        })
     }
   
     const handleClose = () => {
@@ -111,7 +109,7 @@ const CouponList = () =>  {
                                     <TableCell align="left">{row.discount}</TableCell>
                                  
                                     <TableCell align="left"><Moment format="YYYY/MM/DD">{row.valid_from}</Moment></TableCell>
-                                    <TableCell align="left"><Moment format="YYYY/MM/DD">{row.valid_to}</Moment></TableCell>
+                                    <TableCell align="left"><Moment format="YYYY/MM/DD">{row.valid_until}</Moment></TableCell>
                                     <TableCell align="left">{row.limit}</TableCell>
                                     <TableCell align="left">{row.use}</TableCell>
                                     <TableCell align="left">{row.description}</TableCell>
@@ -134,8 +132,16 @@ const CouponList = () =>  {
                                         <controls.ActionButton
                                             color="primary"
                                             onClick={() => {
-                                                setTitle("Edit Coupon")
-                                                handleClickOpens()
+                                                // setTitle("Edit Coupon")
+                                                // handleClickOpens()
+                                                setDataItemState({
+                                                    ...row
+                                                })
+                                                setPopupStates({
+                                                    title: "Edit Coupon",
+                                                    openPopup: true,
+                                                    size: "md"
+                                                })
                                             }}
                                         >
                                             <EditOutlinedIcon fontSize="small" />
@@ -202,16 +208,15 @@ const CouponList = () =>  {
                 }
             }
         })
-    }, [valuesSearch, notif])
+    }, [valuesSearch, afterSave])
 
     useEffect(() => {
         console.log("afterSave", afterSave)
-        if (afterSave == true) {
-            // setReloadState(now())
+        if (afterSave) {
+          
+            refreshGetDataCoupon()
             setAfterSave(false)
-            setFilterFn({
-                fn: items => { return items = coupon.data }
-            })
+         
         }
     }, [afterSave]);
 

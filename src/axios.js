@@ -16,5 +16,5 @@ const axiosInstance = axios.create()
 
 export default axios.create({
     //baseURL:"http://localhost:8090"
-    baseURL:"http://103.250.10.196:8090"
+    baseURL:"https://103.250.10.196:8090"
 })

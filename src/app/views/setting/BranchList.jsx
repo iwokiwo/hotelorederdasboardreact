@@ -94,7 +94,7 @@ const BranchList = () => {
         TblHead,
         TblPagination,
         recordsAfterPagingAndSort
-    } = useTable(isNil(branch) ? []: branch.data, headCall, filterFn);
+    } = useTable((isNil(branch)|| branch.length === 0) ? []: branch.data, headCall, filterFn);
 
     const formik = useFormik({
         initialValues: {

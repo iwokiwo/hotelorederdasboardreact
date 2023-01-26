@@ -18,5 +18,5 @@ export default axios.create({
     // baseURL:"http://localhost:8085/api/v1/"  
     //baseURL:"http://147.139.139.7:8085/api/v1/"
 
-    baseURL:"http://localhost:8090"
+    baseURL:"http://103.250.10.196:8090"
 })

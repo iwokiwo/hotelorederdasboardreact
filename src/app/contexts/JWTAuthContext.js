@@ -108,6 +108,8 @@ export const AuthProvider = ({ children }) => {
                 data,
             },
         })
+
+        
     }
 
     const register = async (email, username, password) => {

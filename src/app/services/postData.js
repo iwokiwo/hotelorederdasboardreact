@@ -6,6 +6,9 @@ export async function PostData(url, dataPost) {
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': '*',
+      'Access-Control-Allow-Credentials': 'true',
       'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
     },
   })

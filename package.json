@@ -1,6 +1,8 @@
 {
     "name": "yespos-react",
     "version": "1.0.0",
+    "proxy":"http://103.250.10.196:8090",
+    "homepage": "http://localhost:8090",
     "private": true,
     "dependencies": {
         "@auth0/auth0-spa-js": "^1.19.2",
@@ -19,6 +21,7 @@
         "echarts": "^5.2.2",
         "echarts-for-react": "^3.0.2",
         "formik": "^2.2.9",
+        "http-proxy-middleware": "^2.0.6",
         "jsonwebtoken": "^8.5.1",
         "jwt-decode": "^3.1.2",
         "lodash": "^4.17.19",

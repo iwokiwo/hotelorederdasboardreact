@@ -1,7 +1,7 @@
 {
     "name": "yespos-react",
     "version": "1.0.0",
-    "proxy":"https://103.250.10.196:8090",
+    "proxy":"http://103.250.10.196:8090",
     "homepage": "http://localhost:8090",
     "private": true,
     "dependencies": {

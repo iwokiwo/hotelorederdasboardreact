@@ -1,7 +1,7 @@
 import { Autocomplete, Box, Button, Grid, Switch, TextField, Typography } from '@mui/material';
 import { getDataBranch } from 'app/store/Branchs';
-import { openMessage, popupState, reload } from 'app/store/Controls';
-import { dataDiscountType, getDataCoupon, setDataCouponFromik } from 'app/store/Coupon'
+import { openMessage, popupState } from 'app/store/Controls';
+import { dataDiscountType, getDataCoupon, setDataCouponFromik, reload } from 'app/store/Coupon'
 import { useFormik } from 'formik'
 import React from 'react'
 import { useRecoilRefresher_UNSTABLE, useRecoilState, useRecoilValue } from 'recoil';

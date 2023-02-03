@@ -2,8 +2,13 @@ import { GetData } from "app/services/getData";
 import { urlCoupon } from "app/utils/constant";
 import moment from "moment";
 import { atom, selector } from "recoil";
-import { openMessage, reload } from "./Controls";
+import { openMessage} from "./Controls";
 import { pagination } from "./Pagination";
+
+export const reload = atom({
+    key: 'reload-coupon',
+    default: 0
+})
 
 
 export const dataHeadCallCoupons = atom({

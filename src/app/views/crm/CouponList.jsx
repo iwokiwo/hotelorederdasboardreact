@@ -2,7 +2,7 @@ import { Box, Button, Card, CardContent, Dialog, DialogActions, DialogContent, D
 import { styled, useTheme } from '@mui/system'
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { Breadcrumb } from 'app/components'
-import React, { useEffect } from 'react'
+import React, { useEffect, useReducer } from 'react'
 import CloseIcon from '@mui/icons-material/Close'
 
 import { isEmpty, isNil } from 'lodash'
@@ -25,6 +25,7 @@ const CouponList = () =>  {
     const bgError = palette.error.main
     const bgPrimary = palette.primary.main
     const bgSecondary = palette.secondary.main
+    const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
 
     const [valuesSearch, setValuesSearch] = React.useState('');
     const [filterFn, setFilterFn] = React.useState({ fn: items => { return items; } });
@@ -213,12 +214,14 @@ const CouponList = () =>  {
     }, [valuesSearch])
 
     useEffect(() => {
+        forceUpdate()
         if (afterSave) {
            // refreshGetDataCoupon()
             setFilterFn({
                 fn: items => { return items = coupon.data }
             })
             setAfterSave(false)
+            
         }
     }, [afterSave]);
 

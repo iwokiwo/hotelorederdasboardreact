@@ -92,9 +92,11 @@ const CouponForm = (props) => {
                         message: value.message,
                         type: value.status
                     })
-                    setReloadState(Math.random())
-                    setAfterSave(true)
-                    setAfterSaveForm(true)
+                    if(value.code === 200){
+                        setReloadState(Math.random())
+                        setAfterSave(true)
+                        setAfterSaveForm(true)
+                    }
                 }
                     )
                  
@@ -113,14 +115,22 @@ const CouponForm = (props) => {
                 })
                 data.then((value) =>{
                    // refreshGetDataCoupon()
+              
                     setNotif({
                         isOpen: true,
                         message: value.message,
                         type: value.status
-                    })})
-                    setReloadState(Math.random())
-                    setAfterSave(true)
-                    setAfterSaveForm(true)
+                    })
+                    if(value.code === 200){
+                        setReloadState(Math.random())
+
+                        console.log("reloadState",reloadState)
+                        setAfterSave(true)
+                        setAfterSaveForm(true)
+                    }
+                })
+                  
+                 
          
             }
             

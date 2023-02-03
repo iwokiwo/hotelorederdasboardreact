@@ -72,7 +72,7 @@ const CouponForm = (props) => {
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
-           // console.log(Number(values.limit))
+            console.log(values)
             if (Number(values.id) === 0) {
               
                 PostData(urlCreateCoupon, {
@@ -119,7 +119,7 @@ const CouponForm = (props) => {
             }
            
          
-        //    setReloadState(now())
+            setReloadState(now())
 
            setAfterSave(true)
            setAfterSaveForm(true)

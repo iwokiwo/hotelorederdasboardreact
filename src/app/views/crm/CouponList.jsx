@@ -208,7 +208,7 @@ const CouponList = () =>  {
                 }
             }
         })
-    }, [valuesSearch, afterSave])
+    }, [valuesSearch])
 
     useEffect(() => {
         console.log("afterSave", afterSave)

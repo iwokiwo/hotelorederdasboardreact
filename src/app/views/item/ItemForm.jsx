@@ -219,7 +219,12 @@ const ItemForm = (props) => {
                     isOpen: true,
                     message: value.message,
                     type: value.status
-                })})
+                })
+                setReloadState(Math.random())
+                formik.values.multiFile =[]
+                setAfterSave(true)
+                setAfterSaveForm(true)
+            })
 
         } else {
 
@@ -236,13 +241,16 @@ const ItemForm = (props) => {
                     isOpen: true,
                     message: value.message,
                     type: value.status
-                })})
+                })
+                setReloadState(Math.random())
+                formik.values.multiFile =[]
+                setAfterSave(true)
+                setAfterSaveForm(true)
+            })
               
         }
 
-       formik.values.multiFile =[]
-        setAfterSave(true)
-        setAfterSaveForm(true)
+     
     }
 
     useEffect(() => {

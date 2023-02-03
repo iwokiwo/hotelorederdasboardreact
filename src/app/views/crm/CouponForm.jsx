@@ -93,6 +93,8 @@ const CouponForm = (props) => {
                         type: value.status
                     })
                     setReloadState(Math.random())
+                    setAfterSave(true)
+                    setAfterSaveForm(true)
                 }
                     )
                  
@@ -117,12 +119,12 @@ const CouponForm = (props) => {
                         type: value.status
                     })})
                     setReloadState(Math.random())
-
+                    setAfterSave(true)
+                    setAfterSaveForm(true)
+         
             }
             
-            setAfterSave(true)
-           setAfterSaveForm(true)
-
+           
         },
     })
 

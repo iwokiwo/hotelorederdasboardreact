@@ -216,6 +216,9 @@ const CouponList = () =>  {
           
             refreshGetDataCoupon()
             setAfterSave(false)
+            setFilterFn({
+                fn: items => { return items = coupon.data }
+            })
          
         }
     }, [afterSave]);

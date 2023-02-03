@@ -214,14 +214,15 @@ const CouponList = () =>  {
     }, [valuesSearch])
 
     useEffect(() => {
-        forceUpdate()
+       
         if (afterSave) {
            // refreshGetDataCoupon()
+           console.log(" coupon.data", coupon.data)
             setFilterFn({
                 fn: items => { return items = coupon.data }
             })
             setAfterSave(false)
-            
+            forceUpdate()
         }
     }, [afterSave]);
 

@@ -17,5 +17,5 @@ export const confirmDialogState = atom({
 
 export const reload = atom({
     key: 'reload-state',
-    default: ''
+    default: 0
 })

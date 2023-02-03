@@ -10,14 +10,15 @@ import { isEmpty, isNil } from 'lodash'
 import { Container, CardHeader, Small } from '../components/styleGlobal'
 import controls from '../components'
 import {  Span } from 'app/components/Typography'
-import { useRecoilRefresher_UNSTABLE, useRecoilState, useRecoilValue } from 'recoil'
-import { dataCoupon, dataHeadCallCoupons, getDataCoupon } from 'app/store/Coupon'
+import { useRecoilRefresher_UNSTABLE, useRecoilState, useRecoilValue, useResetRecoilState, useSetRecoilState } from 'recoil'
+import { dataCoupon, dataHeadCallCoupons, getDataCoupons, getDataCoupon } from 'app/store/Coupon'
 import { confirmDialogState, openMessage, popupState, reload } from 'app/store/Controls'
 import useTable from '../components/useTable'
 import Moment from 'react-moment';
 import CouponForm from './CouponForm';
 import notif from '../components/notif';
 import moment, { now } from 'moment';
+
 
 const CouponList = () =>  {
     const { palette } = useTheme()
@@ -36,13 +37,13 @@ const CouponList = () =>  {
     const {coupon} = useRecoilValue(getDataCoupon)
     const [confirmDialog, setConfirmDialog] = useRecoilState(confirmDialogState)
     const [popupStates, setPopupStates] = useRecoilState(popupState)
-    const [reloadState, setReloadState] = useRecoilState(reload)
+    const  setReloadState = useSetRecoilState(reload)
     const [dataItemState, setDataItemState] = useRecoilState(dataCoupon)
     const refreshGetDataCoupon = useRecoilRefresher_UNSTABLE(getDataCoupon);
 
     
 
-    console.log("coupon",coupon)
+  //  console.log("coupon",coupon)
     const handleClickOpens = () => {
       setOpen(true);
     };
@@ -92,6 +93,7 @@ const CouponList = () =>  {
     }
 
     const renderTable = () => {
+
 
         return(
             <Box component="div" overflow="auto">
@@ -211,15 +213,12 @@ const CouponList = () =>  {
     }, [valuesSearch])
 
     useEffect(() => {
-        console.log("afterSave", afterSave)
         if (afterSave) {
-          
-            refreshGetDataCoupon()
-            setAfterSave(false)
+           // refreshGetDataCoupon()
             setFilterFn({
                 fn: items => { return items = coupon.data }
             })
-         
+            setAfterSave(false)
         }
     }, [afterSave]);
 

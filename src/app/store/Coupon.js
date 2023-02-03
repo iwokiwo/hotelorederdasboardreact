@@ -5,6 +5,7 @@ import { atom, selector } from "recoil";
 import { openMessage, reload } from "./Controls";
 import { pagination } from "./Pagination";
 
+
 export const dataHeadCallCoupons = atom({
     key: 'dataHeadCallCoupons',
     default:  [
@@ -70,7 +71,7 @@ export const getDataCoupon = selector({
         } catch (error) {
             coupon=  {coupon: []}
         }
-        console.log("coupon", coupon)
+       // console.log("coupon recoil", coupon)
         return coupon
     }
 })

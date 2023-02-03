@@ -90,7 +90,8 @@ const BussinesForm = () => {
                 openPopup: false
             })
 
-            setReloadState(now())
+           // setReloadState(now())
+           setReloadState(Math.random())
         },
     });
 

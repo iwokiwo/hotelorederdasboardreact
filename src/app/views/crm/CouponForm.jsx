@@ -117,11 +117,8 @@ const CouponForm = (props) => {
                     })})
 
             }
-           
-         
-            setReloadState(now())
-
-           setAfterSave(true)
+            setReloadState(Math.random())
+            setAfterSave(true)
            setAfterSaveForm(true)
 
         },

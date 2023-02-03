@@ -130,8 +130,8 @@ const BranchList = () => {
                 openPopup: false
             })
 
-            setReloadState(now())
-
+           // setReloadState(now())
+           setReloadState(Math.random())
 
         },
     });
@@ -181,8 +181,8 @@ const BranchList = () => {
             ...confirmDialog,
             isOpen: false
         })
-        setReloadState(now())
-
+       // setReloadState(now())
+       setReloadState(Math.random())
     }
 
     const RrenderTable = () => {

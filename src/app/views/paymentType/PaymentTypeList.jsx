@@ -133,16 +133,17 @@ const PaymentTypeList = () =>{
     }
 
     const onDelete = (values) => {
-        DeleteData(urlDeletePaymentType, values).then((value) =>{
-           
-         
-            if( value.code === 200){
-                setReloadState(Math.random())
-
-                setConfirmDialog({
+              setConfirmDialog({
                     ...confirmDialog,
                     isOpen: false
                 })
+        DeleteData(urlDeletePaymentType, values).then((value) =>{
+           
+     
+            if( value.code === 200){
+                setReloadState(Math.random())
+
+              
                
                 setFilterFn({
                     fn: items => { return items = PaymentType.data }

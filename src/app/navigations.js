@@ -43,6 +43,11 @@ export const navigations = [
                 path: '/unit/unit-list',
             },
             {
+                name: 'Payment Type',
+                iconText: 'PT',
+                path: '/paymentType/paymentType-list',
+            },
+            {
                 name: 'Error',
                 iconText: '404',
                 path: '/session/404',

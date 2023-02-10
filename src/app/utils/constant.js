@@ -37,3 +37,9 @@ export let urlCreateCoupon='/api/v1/coupon/create'
 export let urlUpdateCoupon='/api/v1/coupon/update'
 export let urlCoupon='/api/v1/coupon/searchAll'
 export let urlDeleteCoupon='/api/v1/coupon/delete/'
+
+//---------------------url PaymentType-------------------------------
+export let urlCreatePaymentType='/api/v1/payment-type/create'
+export let urlUpdatePaymentType='/api/v1/payment-type/update'
+export let urlPaymentType='/api/v1/payment-type/searchAll'
+export let urlDeletePaymentType='/api/v1/payment-type/delete/'

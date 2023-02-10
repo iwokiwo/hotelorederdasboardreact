@@ -8,6 +8,7 @@ import materialRoutes from './views/material-kit/MaterialRoutes'
 import UnitRoutes from './views/unit/UnitRoutes'
 import SettingRoutes from './views/setting/SettingRoutes'
 import CrmRoutes from './views/crm/CrmRoutes'
+import PaymentTypeRoutes from './views/paymentType/PaymentTypeRoutes'
 
 const redirectRoute = [
     {
@@ -25,10 +26,11 @@ const errorRoute = [
 
 const routes = [
     ...dashboardRoutes,
-    ...itemRoutes,
-    ...CategoryRoutes,
-    ...UnitRoutes,
-    ...CrmRoutes,
+    // ...itemRoutes,
+    // ...CategoryRoutes,
+    // ...UnitRoutes,
+    // ...PaymentTypeRoutes,
+    // ...CrmRoutes,
     ...SettingRoutes,
     ...materialRoutes,
     ...chartsRoute,

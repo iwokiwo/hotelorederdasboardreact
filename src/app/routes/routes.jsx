@@ -11,6 +11,7 @@ import CategoryRoutes from 'app/views/category/CategoryRoutes'
 import UnitRoutes from 'app/views/unit/UnitRoutes'
 import SettingRoutes from 'app/views/setting/SettingRoutes'
 import CrmRoutes from 'app/views/crm/CrmRoutes'
+import PaymentTypeRoutes from 'app/views/paymentType/PaymentTypeRoutes'
 
 export const AllPages = () => {
     const all_routes = [
@@ -25,6 +26,7 @@ export const AllPages = () => {
                 ...itemRoutes, 
                 ...CategoryRoutes,
                 ...UnitRoutes,
+                ...PaymentTypeRoutes,
                 ...CrmRoutes,
                 ...SettingRoutes,
                 ...chartsRoute, 

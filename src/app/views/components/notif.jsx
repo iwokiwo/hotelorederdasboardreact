@@ -8,7 +8,7 @@ import { useRecoilState } from 'recoil';
 const useStyles = theme => ({
     root: {
        // top: theme.spacing(10)
-       top: theme.spacing(10)
+       top: theme.spacing(2)
     }
   })
 
@@ -29,8 +29,8 @@ function Notification(props) {
        <Snackbar
             className={classes.root}
            open={notif.isOpen}
-            autoHideDuration={2000}
-            anchorOrigin={{vertical:'top',horizontal:'right'}}
+            autoHideDuration={4000}
+            anchorOrigin={{vertical:'top',horizontal:'center'}}
             onClose={handleClose}
             >
            <Alert 
